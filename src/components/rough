@@ -1,0 +1,1003 @@
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Mail, Instagram, Twitter } from "lucide-react";
+import FooterLogo from "../src/assets/images/logo/Lumely logo 3.svg";
+import featureFireBall from "../src/assets/images/features/fireball.png";
+import LogoFlame from "../src/assets/images/logo/logoFlame.png";
+import StreakBG from "../src/assets/images/StreakChamp.png";
+import StreakBlueBG from "../src/assets/images/streakBlueBG.png";
+import StreakVSGroup from "../src/assets/images/streakGroup.png";
+import LumeFlameAvatarSvg from "../src/assets/images/LumeFlameAvatar.svg";
+import bulletCircle from "../src/assets/images/Check-Circle.svg";
+import Xainab from "../src/assets/images/lumeChamp/Xainab.png";
+import ibrahim from "../src/assets/images/lumeChamp/ibrahim.png";
+import chimdi from "../src/assets/images/lumeChamp/chimdi.png";
+import LumeChmapBg from "../src/assets/images/lumeChamp/champBg.png";
+import howItWorksBg from "../src/assets/images/howitworks/transparentBg.png";
+
+import phoneMockup from "../src/assets/images/howitworks/iPhone14.png";
+import HeroImage from "../src/assets/images/hero/HeroImage.png";
+import HeroShadow from "../src/assets/images/hero/whiteShadow.png";
+import HeroFlame from "../src/assets/images/hero/lumelyFlame.png";
+import GoalTrackingCard from "./components/GoalTrackingCard";
+import featureImage1 from "../src/assets/images/features/image1.png";
+import featureImage2 from "../src/assets/images/features/image2.png";
+import featureImage3 from "../src/assets/images/features/image3.png";
+import featureImage4 from "../src/assets/images/features/image4.png";
+import featureImage5 from "../src/assets/images/features/image5.png";
+import Layout from "./components/Layout";
+import { Menu, X } from "lucide-react";
+
+function App() {
+  const [activeTab, setActiveTab] = useState("solo");
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <Layout>
+      <div className="min-h-screen bg-white">
+        {/* Navigation */}
+        <nav className="container mx-auto px-4 py-6 flex items-center justify-between">
+          {/* Logo Section */}
+          <div>
+            <img src={FooterLogo} alt="Logo missing" className="w-[120px]" />
+          </div>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex space-x-12 items-center justify-between bg-white rounded border border-[#EBF3FF] px-6 py-2">
+            <div className="flex space-x-12 items-center w-[513px] p-3 gap-2 bg-[#f9fbff] rounded border border-[#EBF3FF]">
+              <a
+                href="#how-it-works"
+                className="hover:opacity-80 text-[16px] font-fredoka text-[#007BFF]"
+              >
+                How it works
+              </a>
+              <a
+                href="#features"
+                className="hover:opacity-80 text-[16px] font-fredoka text-[#007BFF]"
+              >
+                Features
+              </a>
+              <a
+                href="#leaderboard"
+                className="hover:opacity-80 text-[16px] font-fredoka text-[#007BFF]"
+              >
+                Leaderboard
+              </a>
+            </div>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
+
+          {/* Mobile Navigation */}
+          {isOpen && (
+            <div className="absolute top-16 left-0 w-full bg-white border-t border-[#EBF3FF] shadow-md md:hidden">
+              <div className="flex flex-col space-y-4 py-4 items-center">
+                <a
+                  href="#how-it-works"
+                  className="text-[16px] font-fredoka text-[#007BFF] hover:opacity-80"
+                >
+                  How it works
+                </a>
+                <a
+                  href="#features"
+                  className="text-[16px] font-fredoka text-[#007BFF] hover:opacity-80"
+                >
+                  Features
+                </a>
+                <a
+                  href="#leaderboard"
+                  className="text-[16px] font-fredoka text-[#007BFF] hover:opacity-80"
+                >
+                  Leaderboard
+                </a>
+              </div>
+            </div>
+          )}
+
+          {/* CTA Button */}
+          <button className="text-white text-center h-[68px] text-[18px] font-bold font-[Fredoka] text-shadow-[0px_2px_10px_#B0C] stroke-[1px] stroke-[#8C0099] px-12 py-3 bg-[url('/src/assets/images/howitworks/startWiningbutton2.png')] bg-contain bg-center bg-no-repeat hover:opacity-90 hidden md:block">
+            <span className="invisible">Start Winning</span>
+          </button>
+        </nav>
+
+        {/* Hero Section */}
+        <section className="container mx-auto px-4 pt-16 relative">
+          <div className="max-w-6xl mx-auto text-center flex flex-col gap-1 justify-center items-center ">
+            <motion.h1
+              className="text-4xl sm:text-5xl md:text-6xl font-semibold text-center text-[48px]  leading-[20px] text-[#007BFF] font-fredokaOne relative"
+              initial={{ opacity: 0, y: -50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+            >
+              <img
+                src={
+                  "https://s3-alpha-sig.figma.com/img/fa0a/1e4a/99a3c80b591f7d8549293cca23481b1f?Expires=1743379200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=rdKj4G5CHCgxnkSecs1O1TqyxmNPEWYMK0sWW2AWyKgWbHM7umDJXZCiHpDqyAggjnYoNf79N6ZANMZcCuMacFJR~EurVs9XfTmkweGG85hns-frOCCJrmDFogGdPaeSI0G6rn9xGtettfrewWYd95q~k3fs54Qe9OH-2dcHm4vNd8ZLt6Tr9M57OQT6eJ5cdQGRysaxquGd0Lpk3fmOelWPElFJQdcfvbX6zx6tFtAGgXSfvjLmvpgq4CU93WX~QDbLuwcwDGZnDNXymouySfG0lm8u1NJWbGKuI4OZVVRJJ73rxLbBmlwyw8sFP3vMb-mpfE6ODgX9Z2LdjYfmQg__"
+                }
+                alt=""
+                className="w-20 h-20 absolute -top-8 -right-16 rotate-12"
+              />
+              Crush Your
+              <span className="text-[#002053] text-[48px] font-[300] leading-[60px] font-[Fredoka]">
+                {" "}
+                Goals
+                <span className="text-[#002053] text-[48px] font-bold leading-[60px] font-[Fredoka]">
+                  .
+                </span>
+              </span>{" "}
+              Build
+              <br />
+              Winning
+              <span className="text-[#002053] text-[48px] font-[300] leading-[60px] font-[Fredoka]">
+                {" "}
+                Habits
+                <span className="text-[#002053] text-[48px] font-bold leading-[60px] font-[Fredoka]">
+                  .
+                </span>
+              </span>
+              <span className="flex items-center justify-center space-x-1">
+                <img
+                  src={
+                    "https://s3-alpha-sig.figma.com/img/ad10/08a6/055d41b8dd78b6e696cd11aed4d3ff3f?Expires=1743379200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=FSWmBGDo-tB7EPdNamx2rd16brjBXJi-xh0XlAry--EKwpvvPzCjN9FoBUptEQUR7SHdW0dcRnTPnXLiAxzrXrGX53m8frSRbTNZ4F9qZ9cujvpSx77CrcqDnbHw7ekt~7H2g1OwBaqhkSiiasbwzd0mqMEZ8p-63M4-9KdMgw29t0EBKLk6Rh1sIHZkEAkBrLp~9OZTATNI8xh3pYpM3oCtX-Newta2lRNJgkZlGADEYxBOvDtC872agrHFmz9iGgoY1Tsxyc68P4qMYHfB~LhlhxbQHDoXAXREMQTU35k3eAHZxZEwYGM6pP~CzGousOkbXZE00-KO8s~TUY4mSQ__"
+                  }
+                  alt=""
+                  className="w-20 h-20 inline"
+                />
+                <span className="text-[#002053] text-[48px] font-normal leading-[60px] font-[Fredoka]">
+                  Stay
+                </span>
+                Unstoppable!
+              </span>
+            </motion.h1>
+
+            <motion.p
+              className="  mb-12 text-[#444] text-center text-[20px] font-[400] font-[Nunito]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.5, duration: 1 }}
+            >
+              Lumely is your secret weapon for success. Build better habits,
+              <br />
+              stay consistent, and challenge yourself with real rewards.
+            </motion.p>
+            <motion.div
+              className="flex items-center justify-center gap-4"
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 2, duration: 1 }}
+            >
+              <div className="relative w-96">
+                <input
+                  type="email"
+                  placeholder="Email here"
+                  className="px-8 py-5 w-full text-[#0057E2] bg-white rounded-full focus:outline-none focus:ring-0 shadow-none border-2 border-transparent bg-clip-padding relative z-10"
+                />
+                <div className="absolute inset-0 rounded-full p-[2px] bg-gradient-to-r from-[#68A2FF] via-transparent to-transparent"></div>
+              </div>
+
+              <button className="px-12 py-4 text-white font-bold text-center hover:opacity-90 bg-[url('/src/assets/images/hero/WaitListbutton.png')] bg-contain bg-center  bg-no-repeat">
+                Join waiting list
+              </button>
+            </motion.div>
+            <motion.div
+              className="w-full flex flex-col justify-center items-center bg-white relative"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 1.5 }}
+            >
+              <img src={HeroImage} className="" alt="Hero Image" />
+              <img
+                src={HeroShadow}
+                className="absolute bottom-0"
+                alt="Hero Image"
+              />
+              <motion.img
+                src={HeroFlame}
+                className="absolute left-16 bottom-20"
+                alt="Hero Image"
+                animate={{ y: [0, -10, 0] }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 2,
+                  ease: "easeInOut",
+                }}
+              />
+            </motion.div>
+          </div>
+        </section>
+
+        {/* How it Works */}
+        <section id="how-it-works" className="bg-[#FF8C00] py-20 relative">
+          <img src={howItWorksBg} alt="Bg" className="absolute top-0 left-0" />
+          <div className="container mx-auto px-4">
+            <motion.h2
+              className="text-4xl text-white font-fredoka text-[48px] font-semibold leading-none tracking-[-0.96px]  text-center mb-4 pl-72"
+              initial={{ opacity: 0, y: -30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              How it works
+            </motion.h2>
+            <motion.p
+              className="  mb-12 text-[#FFE8CC] text-center font-[Fredoka] text-[20px] font-normal leading-none pl-80"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              How Lumely Works in 5 Simple Steps:
+            </motion.p>
+            <div className="flex flex-col md:flex-row justify-center items-start gap-24">
+              <motion.div
+                className="w-72 h-[600px] rounded-[3rem] overflow-hidden"
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
+                <img src={phoneMockup} alt="App image mockup" />
+              </motion.div>
+              <div className="space-y-12 relative before:absolute before:left-0 before:top-6 before:w-0.5 before:h-[calc(100%-2rem)] before:bg-[#FFD9AA] stroke-[#FFD9AA] stroke-2">
+                {[
+                  {
+                    title: "Set Your Goal",
+                    items: [
+                      "Create a goal",
+                      "Choose the habits you want to master",
+                      "Create a To-Do",
+                    ],
+                  },
+                  {
+                    title: "Get AI-Powered Guidance",
+                    items: [
+                      "Get smart habit suggestions",
+                      "Personalized reminders",
+                      "Progress insights from Lumely's AI coach",
+                    ],
+                  },
+                  {
+                    title: "Make It Stick",
+                    items: [
+                      "Build streaks",
+                      "Stay consistent",
+                      "Reinforce habits with engaging micro-tasks",
+                    ],
+                  },
+                  {
+                    title: "Challenge Yourself",
+                    items: [
+                      "Join leaderboards",
+                      "Compete with friends",
+                      "Push yourself to the next level",
+                    ],
+                  },
+                  {
+                    title: "Celebrate Your Wins!",
+                    items: [
+                      "Earn rewards",
+                      "Unlock achievements",
+                      "Show off your progress!",
+                    ],
+                  },
+                ].map((step, index) => (
+                  <motion.div
+                    key={index}
+                    className="flex items-start gap-6 text-white pl-8"
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: 0.2 * index }}
+                  >
+                    <div className="w-6 h-6 flex-shrink-0 rounded-full bg-[#FFD9AA] mt-4 -ml-11"></div>
+                    <div>
+                      <h3 className="text-xl mb-2 text-white font-[Fredoka] text-[24px] font-bold leading-none">
+                        {step.title}
+                      </h3>
+                      <ul className="space-y-1 text-sm opacity-90">
+                        {step.items.map((item, i) => (
+                          <li
+                            key={i}
+                            className="text-[#FFE8CC] font-[Fredoka] text-[16px] font-normal leading-none list-disc list-inside marker:text-white"
+                          >
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            <motion.div
+              className="text-center mt-12"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 1.5 }}
+            >
+              <p className="text-white mb-4 text-[24px] font-medium leading-normal font-[Fredoka]">
+                Be the a win a winner, you're born a winner
+              </p>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className=" text-white text-center h-[175px] text-[18px] font-bold leading-normal font-[Fredoka] text-shadow-[0px_2px_10px_#B0C] stroke-[1px] stroke-[#8C0099] px-12 py-3  hover:opacity-90  bg-[url('/src/assets/images/howitworks/startWiningbutton2.png')] bg-contain bg-center bg-no-repeat "
+              >
+                <span className="invisible">Start Winning</span>
+              </motion.button>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Features */}
+        <section id="features" className="bg-[#1A237E] py-20 relative">
+          <div className="container mx-auto px-4">
+            <motion.h2
+              className="text-3xl text-white mb-4  font-fredoka text-[36px] font-semibold tracking-[-0.72px]"
+              initial={{ opacity: 0, y: -30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              What You Can Do with Lumely
+            </motion.h2>
+            <motion.p
+              className="text-white/80 mb-12 max-w-2xl text-[#DBE9FF] font-fredoka text-[24px] font-medium"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              Set Goals & Resolutions. Get daily habits to achieve them. Stay
+              consistent with Lumely. Actually achieve them, and Repeat.
+            </motion.p>
+            <img
+              src={featureFireBall}
+              alt="Background avatar"
+              className="absolute -right-0 -top-0"
+            />
+            <motion.div
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative bg-[url('/src/assets/images/features/bgCloud.png')] bg-cover bg-center py-28 h-auto"
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.3 },
+                },
+              }}
+            >
+              {[
+                {
+                  title: "Goal Tracking",
+                  description: "Set personal goal and track your wins",
+                  image: featureImage1,
+                  style: "top-0 left-[6%] translate-x-[-30%]",
+                },
+                {
+                  title: "Compete & Connect",
+                  description:
+                    "Join the Lumely League, challenge friends, and earn bragging rights",
+                  image: featureImage2,
+                  style: "top-[100px] left-0", // Left mid
+                },
+                {
+                  title: "Streak Power",
+                  description:
+                    "Keep your streak alive and move up the leaderboard",
+                  image: featureImage3,
+                  style: "top-[200px] right-0", // Right mid
+                },
+                {
+                  title: "To-Do Feature",
+                  description:
+                    "Not just habits! Add daily tasks and mark them done",
+                  image: featureImage4,
+                  style: "top-[150px] left-[20%] translate-x-[-30%]", // Center bottom
+                },
+                {
+                  title: "Lume AI",
+                  description: "Smart reminders and tips tailored for you",
+                  image: featureImage5,
+                  style: "top-[250px] left-[60%] translate-x-[-60%]", // Bottom center
+                },
+              ].map((feature, index) => (
+                <GoalTrackingCard
+                  key={index}
+                  title={feature.title}
+                  description={feature.description}
+                  cardImage={feature.image}
+                  style={feature.style}
+                  className="border border-gray-200"
+                />
+              ))}
+            </motion.div>
+            <img
+              src={featureFireBall}
+              alt="Background avatar"
+              className="absolute -right-0 -bottom-6"
+            />
+            <div className="text-center mt-44 ">
+              <p className=" mb-6 text-[#DBE9FF] text-center font-fredoka text-[30px] font-mediums">
+                Don't be all mouth, without action
+              </p>
+              <button className=" text-white text-center h-[68px] text-[18px] font-bold leading-normal font-fredoka text-shadow-[0px_2px_10px_#B0C] stroke-[1px] stroke-[#8C0099] px-12 py-3  hover:opacity-90  bg-[url('/src/assets/images/howitworks/startWiningbutton2.png')] bg-contain bg-center bg-no-repeat ">
+                <span className="invisible">Start Winning</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Champions Section */}
+        <section
+          id="leaderboard"
+          className="py-20 bg-gradient-to-br from-purple-50 to-white relative"
+        >
+          <img
+            src={LumeChmapBg}
+            alt="chmap bg"
+            className="absolute top-0 left-0"
+          />
+          <div className="container mx-auto px-4 text-center">
+            <motion.h2
+              className="text-[36px] font-semibold leading-normal tracking-[-0.72px] text-[#8335BB] mb-6 font-fredoka"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              Lume Champion
+            </motion.h2>
+
+            <motion.p
+              className="text-[#350757] text-[20px] font-light leading-normal mb-16 font-fredoka"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              Your habits, your progress, your victories!
+              <br />
+              Compete, track, and rise to the{" "}
+              <span className="text-[#350757] font-semibold">top</span>.
+            </motion.p>
+
+            {/* Leaderboard Display */}
+            <div className="flex flex-col sm:flex-row justify-around items-center gap-1 mt-32 mb-12 py-12 relative  h-auto">
+              {/* Second Place */}
+              <motion.div
+                className="w-48 sm:w-3/12 relative"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+              >
+                <img
+                  src={Xainab}
+                  alt="Second Place"
+                  width={224}
+                  height={320}
+                  className="w-full"
+                />
+              </motion.div>
+
+              {/* First Place  */}
+              <motion.div
+                className="w-48 sm:w-3/12 relative -translate-y-24 z-10"
+                initial={{ scale: 1.3 }}
+                animate={{ scale: 1 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 10,
+                  delay: 0.8,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                }}
+              >
+                <img
+                  src={ibrahim}
+                  alt="First Place"
+                  width={224}
+                  height={320}
+                  className="w-full"
+                />
+              </motion.div>
+
+              {/* Third Place */}
+              <motion.div
+                className="w-48 sm:w-3/12 relative"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 1 }}
+              >
+                <img
+                  src={chimdi}
+                  alt="Third Place"
+                  width={224}
+                  height={320}
+                  className="w-full"
+                />
+              </motion.div>
+            </div>
+
+            <motion.p
+              className="text-[#23043A] text-center text-[24px] font-light leading-normal mb-8 max-w-2xl mx-auto font-fredoka"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 1.2 }}
+            >
+              Complete your daily tasks to stand a chance to win our
+              <span className="font-bold"> monthly Lume Raffle Draw</span> and
+              claim the
+              <span className="font-bold"> Streak Master</span> title by winning
+              six times in a year.
+            </motion.p>
+
+            <motion.button
+              className=" text-white text-center text-[18px] font-bold leading-normal font-fredoka text-shadow-[0px_2px_10px_#B0C] stroke-[1px] stroke-[#8C0099] px-12 py-3  hover:opacity-90  bg-[url('/src/assets/images/buttons/JointheChallenge.png')] bg-contain bg-center bg-no-repeat"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              Join the Challenge
+            </motion.button>
+          </div>
+        </section>
+
+        {/* Streak Challenge */}
+        <motion.section
+          className="py-20 bg-white relative"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          <img src={StreakBG} alt="streak bg" className="absolute -right-0" />
+          <div className="container mx-auto px-4 text-center flex justify-center items-center flex-col">
+            <motion.h2
+              className="text-4xl font-bold mb-4 font-fredoka"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <span className="text-[#2478FF] text-[36px] tracking-[-0.72px] leading-normal font-bold">
+                Ongoing Battle:
+              </span>
+              <br />
+              <span className="text-[#0052AA] text-[36px] leading-normal tracking-[-0.72px] font-bold">
+                The
+              </span>{" "}
+              <span className="text-[#0052AA] text-[36px] leading-normal tracking-[-0.72px] font-light">
+                Ultimate
+              </span>{" "}
+              <span className="text-[#0052AA] text-[36px] leading-normal tracking-[-0.72px] font-bold">
+                Streak Challenge!
+              </span>
+            </motion.h2>
+
+            <motion.p
+              className="text-[#002955] text-center text-[20px] font-light leading-normal mb-12 max-w-3xl mx-auto font-fredoka"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              Five friends. One challenge. Stay on track, complete your daily
+              tasks, and outlast your rivals. The friend with the longest streak
+              wins cash rewards and ultimate bragging rights!
+            </motion.p>
+            <div className="w-[500px] h-[575px] relative">
+              <img
+                src={StreakBlueBG}
+                alt="User avatar"
+                className="w-full h-full absolute top-0 left-0 z-0"
+              />
+
+              <img
+                src={StreakVSGroup}
+                alt="User avatar"
+                className="w-full h-full absolute top-0 left-0 z-10"
+              />
+              <img
+                src={LumeFlameAvatarSvg}
+                alt="User avatar"
+                className="w-[100.135px] h-[95px] absolute bottom-2 -right-24"
+              />
+            </div>
+          </div>
+        </motion.section>
+        {/* Pricing plan */}
+        <div className="flex flex-col items-center py-10">
+          <motion.h2
+            className="text-[#FF8C00] text-[36px] leading-normal tracking-[-0.72px] font-semibold font-fredoka"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            PRICING
+          </motion.h2>
+
+          <motion.h1
+            className="text-[36px] leading-normal tracking-[-0.72px] font-bold text-[#331C00] font-fredoka"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            Choose Your Path!
+          </motion.h1>
+          {/* Tab Switcher */}
+          <motion.div
+            className="flex bg-[#AA5D00] rounded-full p-1 mt-4"
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <button
+              className={`px-24 py-3 text-lg font-semibold rounded-full transition-all duration-300 font-fredoka ${
+                activeTab === "solo"
+                  ? "bg-orange-300 text-[#FFE8CC]"
+                  : "text-[#FFE8CC]"
+              }`}
+              onClick={() => setActiveTab("solo")}
+            >
+              Solo Plan
+            </button>
+            <button
+              className={`px-6 py-2 text-lg font-semibold rounded-full transition-all duration-300 font-fredoka ${
+                activeTab === "battle" ? "bg-orange-300" : "text-[#FFE8CC]"
+              }`}
+              onClick={() => setActiveTab("battle")}
+            >
+              Battle Plan (For 5 Friends)
+            </button>
+          </motion.div>
+          {/* Pricing Cards */}
+          {activeTab === "solo" && (
+            <motion.div
+              className="flex flex-col md:flex-row gap-20 mt-12"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              {/* Monthly Plan */}
+              <motion.div
+                className="bg-orange-400 p-6 rounded-xl shadow-lg w-90 text-black font-fredoka"
+                whileHover={{ scale: 1.05 }}
+              >
+                <h3 className="text-2xl font-bold text-white text-start text-[36px] leading-normal tracking-[-0.72px]">
+                  ₦3,000
+                </h3>
+                <p className="text-sm">Per Month</p>
+                <ul className="mt-4 space-y-2 text-sm">
+                  <li className="flex items-center">
+                    <img
+                      src={bulletCircle}
+                      alt="check"
+                      className="w-4 h-4 mr-2"
+                    />{" "}
+                    Habit tracking & progress insights
+                  </li>
+                  <li className="flex items-center">
+                    <img
+                      src={bulletCircle}
+                      alt="check"
+                      className="w-4 h-4 mr-2"
+                    />{" "}
+                    AI-powered motivation & reminders
+                  </li>
+                  <li className="flex items-center">
+                    <img
+                      src={bulletCircle}
+                      alt="check"
+                      className="w-4 h-4 mr-2"
+                    />{" "}
+                    Streak rewards & milestone celebrations
+                  </li>
+                  <li className="flex items-center">
+                    <img
+                      src={bulletCircle}
+                      alt="check"
+                      className="w-4 h-4 mr-2"
+                    />{" "}
+                    Access to exclusive community challenges
+                  </li>
+                  <li className="flex items-center">
+                    <img
+                      src={bulletCircle}
+                      alt="check"
+                      className="w-4 h-4 mr-2"
+                    />{" "}
+                    Stand a chance to win in the Lume Raffle Draw
+                  </li>
+                </ul>
+                <button className="mt-4 font-fredoka w-full bg-gradient-to-r from-orange-500 to-purple-500 py-2 rounded-lg font-semibold text-white">
+                  Subscribe
+                </button>
+              </motion.div>
+
+              {/* Yearly Plan */}
+              <motion.div
+                className="bg-blue-600 p-6 rounded-xl shadow-lg w-90 text-white relative font-fredoka"
+                whileHover={{ scale: 1.05 }}
+              >
+                <span className="absolute top-2 right-2 bg-white text-blue-600 text-xs px-2 py-1 rounded-lg">
+                  Get 2-month free
+                </span>
+                <h3 className="text-2xl font-bold text-white text-start text-[36px] leading-normal tracking-[-0.72px]">
+                  ₦30,000
+                </h3>
+                <p className="text-sm">Per Year</p>
+                <ul className="mt-4 space-y-2 text-sm">
+                  <li className="flex items-center">
+                    <img
+                      src={bulletCircle}
+                      alt="check"
+                      className="w-4 h-4 mr-2"
+                    />{" "}
+                    Habit tracking & progress insights
+                  </li>
+                  <li className="flex items-center">
+                    <img
+                      src={bulletCircle}
+                      alt="check"
+                      className="w-4 h-4 mr-2"
+                    />{" "}
+                    AI-powered motivation & reminders
+                  </li>
+                  <li className="flex items-center">
+                    <img
+                      src={bulletCircle}
+                      alt="check"
+                      className="w-4 h-4 mr-2"
+                    />{" "}
+                    Streak rewards & milestone celebrations
+                  </li>
+                  <li className="flex items-center">
+                    <img
+                      src={bulletCircle}
+                      alt="check"
+                      className="w-4 h-4 mr-2"
+                    />{" "}
+                    Access to exclusive community challenges
+                  </li>
+                  <li className="flex items-center">
+                    <img
+                      src={bulletCircle}
+                      alt="check"
+                      className="w-4 h-4 mr-2"
+                    />{" "}
+                    Stand a chance to win in the Lume Raffle Draw
+                  </li>
+                </ul>
+                <button className="mt-4 font-fredoka w-full bg-gradient-to-r from-orange-500 to-purple-500 py-2 rounded-lg font-semibold">
+                  Subscribe
+                </button>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {/*  */}
+          {activeTab !== "solo" && (
+            <motion.div
+              className="flex flex-col md:flex-row gap-20 mt-12"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              {/* Monthly Plan */}
+              <motion.div
+                className="bg-orange-400 p-6 rounded-xl shadow-lg w-90 text-black font-fredoka"
+                whileHover={{ scale: 1.05 }}
+              >
+                <h3 className="text-2xl font-bold text-white text-start text-[36px] leading-normal tracking-[-0.72px]">
+                  ₦10,000
+                </h3>
+                <p className="text-sm">Per Month</p>
+                <ul className="mt-4 space-y-2 text-sm">
+                  <li className="flex items-center">
+                    <img
+                      src={bulletCircle}
+                      alt="check"
+                      className="w-4 h-4 mr-2"
+                    />{" "}
+                    Challenge your friends – Track habits together & stay
+                    accountable
+                  </li>
+                  <li className="flex items-center">
+                    <img
+                      src={bulletCircle}
+                      alt="check"
+                      className="w-4 h-4 mr-2"
+                    />{" "}
+                    Leaderboard rankings – Climb the board & stay motivated
+                  </li>
+                  <li className="flex items-center">
+                    <img
+                      src={bulletCircle}
+                      alt="check"
+                      className="w-4 h-4 mr-2"
+                    />{" "}
+                    Exclusive rewards – Win streak bonuses & unlock achievements
+                  </li>
+                  <li className="flex items-center">
+                    <img
+                      src={bulletCircle}
+                      alt="check"
+                      className="w-4 h-4 mr-2"
+                    />{" "}
+                    Access to exclusive community challenges
+                  </li>
+                  <li className="flex items-center">
+                    <img
+                      src={bulletCircle}
+                      alt="check"
+                      className="w-4 h-4 mr-2"
+                    />{" "}
+                    Join the Monthly Lume Raffle Draw – Just complete your daily
+                    tasks!
+                  </li>
+                </ul>
+                <button className="mt-4 w-full bg-gradient-to-r from-orange-500 to-purple-500 py-2 font-fredoka rounded-lg font-semibold text-white">
+                  Subscribe
+                </button>
+              </motion.div>
+
+              {/* Yearly Plan */}
+              <motion.div
+                className="bg-blue-600 p-6 rounded-xl shadow-lg w-90 text-white relative font-fredoka"
+                whileHover={{ scale: 1.05 }}
+              >
+                <span className="absolute top-2 right-2 bg-white text-blue-600 text-xs px-2 py-1 rounded-lg">
+                  Get 2-month free
+                </span>
+                <h3 className="text-2xl font-bold text-white text-start text-[36px] leading-normal tracking-[-0.72px]">
+                  ₦100,000
+                </h3>
+                <p className="text-sm">Per Year</p>
+                <ul className="mt-4 space-y-2 text-sm">
+                  <li className="flex items-center">
+                    <img
+                      src={bulletCircle}
+                      alt="check"
+                      className="w-4 h-4 mr-2"
+                    />{" "}
+                    Challenge your friends – Track habits together & stay
+                    accountable
+                  </li>
+                  <li className="flex items-center">
+                    <img
+                      src={bulletCircle}
+                      alt="check"
+                      className="w-4 h-4 mr-2"
+                    />{" "}
+                    Leaderboard rankings – Climb the board & stay motivated
+                  </li>
+                  <li className="flex items-center">
+                    <img
+                      src={bulletCircle}
+                      alt="check"
+                      className="w-4 h-4 mr-2"
+                    />{" "}
+                    Exclusive rewards – Win streak bonuses & unlock achievements
+                  </li>
+                  <li className="flex items-center">
+                    <img
+                      src={bulletCircle}
+                      alt="check"
+                      className="w-4 h-4 mr-2"
+                    />{" "}
+                    Access to exclusive community challenges
+                  </li>
+                  <li className="flex items-center">
+                    <img
+                      src={bulletCircle}
+                      alt="check"
+                      className="w-4 h-4 mr-2"
+                    />{" "}
+                    Join the Monthly Lume Raffle Draw – Just complete your daily
+                    tasks!
+                  </li>
+                </ul>
+                <button className="mt-4 w-full bg-gradient-to-r from-orange-500 to-purple-500 py-2 rounded-lg font-semibold font-fredoka">
+                  Subscribe
+                </button>
+              </motion.div>
+            </motion.div>
+          )}
+        </div>
+        {/* Footer */}
+        <motion.footer
+          className="bg-white py-12 relative"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="container mx-auto px-4 flex flex-col gap-8 relative">
+            {/* Contact Section */}
+            <motion.div
+              className="grid grid-cols-1 md:grid-cols-2 gap-6"
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <div className="text-[128px] font-fredoka font-medium text-[#0057E2] underline decoration-solid decoration-auto underline-offset-auto tracking-[-2.56px]">
+                help@lumely.com
+              </div>
+            </motion.div>
+
+            {/* Social Icons */}
+            <motion.div
+              className="flex space-x-4 md:space-x-6 justify-start md:justify-start"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              {[Mail, Instagram, Twitter].map((Icon, index) => (
+                <motion.div
+                  key={index}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-[50px] md:w-[61px] flex justify-center items-center p-4 cursor-pointer h-[50px] md:h-[59px] rounded-[4px] border border-[#EEE] bg-white shadow-sm"
+                >
+                  <Icon className={`w-full h-full text-[#0041A9]`} />
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {/* Quick Links */}
+            <motion.div
+              className="text-[16px] font-fredoka font-normal text-[#0041A9]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+            >
+              Quick Links
+            </motion.div>
+
+            <motion.div
+              className="flex flex-wrap justify-start items-center gap-4 md:gap-6 py-3 px-4 bg-[#DBE9FFAD] rounded-[2px] border border-[rgba(219, 233, 255, 0.68)] w-auto md:w-5/12"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+            >
+              {["Home", "How it works", "Features", "Leaderboard"].map(
+                (link, index) => (
+                  <a
+                    key={index}
+                    href="#"
+                    className="text-[#498FFF] text-[14px] md:text-[16px] font-bold hover:text-[#0057E2] transition-colors duration-300"
+                  >
+                    {link}
+                  </a>
+                )
+              )}
+            </motion.div>
+
+            {/* Footer Logo */}
+            <motion.div
+              className="flex justify-start my-4"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 1 }}
+            >
+              <img
+                src={FooterLogo}
+                alt="lumely"
+                className="w-[120px] md:w-[160px] lg:w-[200px]"
+              />
+            </motion.div>
+          </div>
+
+          {/* LogoFlame Positioned Responsively */}
+          <motion.div
+            className="absolute right-0 bottom-2 md:bottom-2 lg:bottom-1"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 1.2 }}
+          >
+            <img
+              src={LogoFlame}
+              alt="lumely"
+              className="w-[80px] md:w-[200px] lg:w-[300px]"
+            />
+          </motion.div>
+        </motion.footer>
+      </div>
+    </Layout>
+  );
+}
+
+export default App;
