@@ -27,9 +27,9 @@ import featureImage4 from "../assets/images/features/image4.png";
 import featureImage5 from "../assets/images/features/image5.png";
 
 import { Menu, X } from "lucide-react";
-import emailjs from "@emailjs/browser";
+// import emailjs from "@emailjs/browser";
 import GoalTrackingCard from "../components/GoalTrackingCard";
-import { EMAILJS_CONFIG } from "../config/emailjs";
+// import { EMAILJS_CONFIG } from "../config/emailjs";
 import Layout from "../components/Layout";
 import { Link } from "react-router-dom";
 
@@ -38,51 +38,51 @@ function LandingPage() {
   const [activeTab, setActiveTab] = useState("solo");
   const [isOpen, setIsOpen] = useState(false);
 
-  const [formData, setFormData] = useState({
-    email: "",
-  });
+  // const [formData, setFormData] = useState({
+  //   email: "",
+  // });
 
-  const [status, setStatus] = useState<
-    "idle" | "sending" | "success" | "error"
-  >("idle");
+  // const [status, setStatus] = useState<
+  //   "idle" | "sending" | "success" | "error"
+  // >("idle");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus("sending");
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setStatus("sending");
 
-    try {
-      await emailjs.send(
-        EMAILJS_CONFIG.SERVICE_ID,
-        EMAILJS_CONFIG.TEMPLATE_ID,
-        {
-          to_email: EMAILJS_CONFIG.TO_EMAIL,
-          from_email: formData.email,
-        },
-        EMAILJS_CONFIG.PUBLIC_KEY
-      );
+  //   try {
+  //     await emailjs.send(
+  //       EMAILJS_CONFIG.SERVICE_ID,
+  //       EMAILJS_CONFIG.TEMPLATE_ID,
+  //       {
+  //         to_email: EMAILJS_CONFIG.TO_EMAIL,
+  //         from_email: formData.email,
+  //       },
+  //       EMAILJS_CONFIG.PUBLIC_KEY
+  //     );
 
-      await emailjs.send(
-        EMAILJS_CONFIG.SERVICE_ID,
-        EMAILJS_CONFIG.USER_TEMPLATE_ID,
-        {
-          to_email: formData.email,
-          from_email: EMAILJS_CONFIG.TO_EMAIL,
-          logo_url: EMAILJS_CONFIG.LOGO_URL,
-          subject: "Welcome to Lumely Waitlist! 🎉",
-          twitter_url: "https://twitter.com/",
-          instagram_url: "https://instagram.com/",
-          support_email: "info@lumely.io",
-        },
-        EMAILJS_CONFIG.PUBLIC_KEY
-      );
+  //     await emailjs.send(
+  //       EMAILJS_CONFIG.SERVICE_ID,
+  //       EMAILJS_CONFIG.USER_TEMPLATE_ID,
+  //       {
+  //         to_email: formData.email,
+  //         from_email: EMAILJS_CONFIG.TO_EMAIL,
+  //         logo_url: EMAILJS_CONFIG.LOGO_URL,
+  //         subject: "Welcome to Lumely Waitlist! 🎉",
+  //         twitter_url: "https://twitter.com/",
+  //         instagram_url: "https://instagram.com/",
+  //         support_email: "info@lumely.io",
+  //       },
+  //       EMAILJS_CONFIG.PUBLIC_KEY
+  //     );
 
-      setStatus("success");
-      setFormData({ email: "" });
-    } catch (error) {
-      console.error("Failed to send email:", error);
-      setStatus("error");
-    }
-  };
+  //     setStatus("success");
+  //     setFormData({ email: "" });
+  //   } catch (error) {
+  //     console.error("Failed to send email:", error);
+  //     setStatus("error");
+  //   }
+  // };
 
   return (
     <Layout>
