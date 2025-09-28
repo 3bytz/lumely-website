@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Instagram, Twitter, Layout } from "lucide-react";
+import { Mail, Instagram, Twitter } from "lucide-react";
 import FooterLogo from "../assets/images/logo/Lumely logo 3.svg";
 import featureFireBall from "../assets/images/features/fireball.png";
 import LogoFlame from "../assets/images/logo/logoFlame.png";
@@ -30,6 +30,8 @@ import { Menu, X } from "lucide-react";
 import emailjs from "@emailjs/browser";
 import GoalTrackingCard from "../components/GoalTrackingCard";
 import { EMAILJS_CONFIG } from "../config/emailjs";
+import Layout from "../components/Layout";
+import { Link } from "react-router-dom";
 
 
 function LandingPage() {
@@ -203,7 +205,7 @@ function LandingPage() {
             </motion.p>
 
             {/* Input and Button */}
-            <motion.div
+            {/* <motion.div
               className="flex flex-col sm:flex-col items-center gap-4 mt-6"
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
@@ -247,7 +249,7 @@ function LandingPage() {
                   Failed to send subscription. Please try again.
                 </p>
               )}
-            </motion.div>
+            </motion.div> */}
 
             {/* Hero Images */}
             <motion.div
@@ -279,7 +281,7 @@ function LandingPage() {
                 }}
                 alt="Flame"
               />
-              <motion.img
+              {/* <motion.img
                 src="https://s3-alpha-sig.figma.com/img/ad10/08a6/055d41b8dd78b6e696cd11aed4d3ff3f?Expires=1743379200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=FSWmBGDo-tB7EPdNamx2rd16brjBXJi-xh0XlAry--EKwpvvPzCjN9FoBUptEQUR7SHdW0dcRnTPnXLiAxzrXrGX53m8frSRbTNZ4F9qZ9cujvpSx77CrcqDnbHw7ekt~7H2g1OwBaqhkSiiasbwzd0mqMEZ8p-63M4-9KdMgw29t0EBKLk6Rh1sIHZkEAkBrLp~9OZTATNI8xh3pYpM3oCtX-Newta2lRNJgkZlGADEYxBOvDtC872agrHFmz9iGgoY1Tsxyc68P4qMYHfB~LhlhxbQHDoXAXREMQTU35k3eAHZxZEwYGM6pP~CzGousOkbXZE00-KO8s~TUY4mSQ__"
                 className="absolute top-[-20px] sm:top-[-40px] right-6 sm:right-12 w-10 sm:w-14 md:left-48 md:top-[-280px]"
                 animate={{ rotate: [0, 10, 0, -10, 0] }}
@@ -289,7 +291,7 @@ function LandingPage() {
                   ease: "easeInOut",
                 }}
                 alt="Floating Element"
-              />
+              /> */}
             </motion.div>
           </div>
         </section>
@@ -1136,19 +1138,31 @@ function LandingPage() {
               Quick Links
             </motion.div>
 
-            <motion.div
-              className="flex flex-wrap justify-start items-center gap-4 md:gap-6 py-3 px-4 bg-[#DBE9FFAD] rounded-[2px] border border-[rgba(219, 233, 255, 0.68)] w-full md:w-5/12"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.8 }}
-            >
-              {[
-                { name: "Home", link: "/" },
-                { name: "How it works", link: "#how-it-works" },
-                { name: "Features", link: "#features" },
-                { name: "Leaderboard", link: "#leaderboard" },
-                { name: "Pricing", link: "#pricing" },
-              ].map((link, index) => (
+             <motion.div
+            className="flex flex-wrap justify-start items-center gap-4 md:gap-6 py-3 px-4 bg-[#DBE9FFAD] rounded-[2px] border border-[rgba(219, 233, 255, 0.68)] w-full md:w-5/12"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+          >
+            {[
+              { name: "Home", link: "/" },
+              { name: "How it works", link: "#how-it-works" },
+              { name: "Features", link: "#features" },
+              { name: "Leaderboard", link: "#leaderboard" },
+              { name: "Pricing", link: "#pricing" },
+              { name: "Support", link: "/support" },
+              { name: "Privacy Policy", link: "/privacy" },
+              { name: "Terms of Service", link: "/terms" },
+            ].map((link, index) => (
+              link.link.startsWith('/') ? (
+                <Link
+                  key={index}
+                  to={link.link}
+                  className="text-[#498FFF] text-sm md:text-[16px] font-bold hover:text-[#0057E2] transition-colors duration-300"
+                >
+                  {link.name}
+                </Link>
+              ) : (
                 <a
                   key={index}
                   href={link.link}
@@ -1156,8 +1170,9 @@ function LandingPage() {
                 >
                   {link.name}
                 </a>
-              ))}
-            </motion.div>
+              )
+            ))}
+          </motion.div>
 
             {/* Footer Logo */}
             <motion.div

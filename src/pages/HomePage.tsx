@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Instagram, Twitter, Layout } from "lucide-react";
+import { Mail, Instagram, Twitter } from "lucide-react";
 import FooterLogo from "../assets/images/logo/Lumely logo 3.svg";
 import featureFireBall from "../assets/images/features/fireball.png";
 import LogoFlame from "../assets/images/logo/logoFlame.png";
@@ -30,6 +30,7 @@ import { Menu, X } from "lucide-react";
 import emailjs from "@emailjs/browser";
 import GoalTrackingCard from "../components/GoalTrackingCard";
 import { EMAILJS_CONFIG } from "../config/emailjs";
+import Layout from "../components/Layout";
 
 
 function HomePage() {
