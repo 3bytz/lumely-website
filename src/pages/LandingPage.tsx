@@ -8,7 +8,7 @@ import StreakBG from "../assets/images/StreakChamp.png";
 import StreakBlueBG from "../assets/images/streakBlueBG.png";
 import StreakVSGroup from "../assets/images/streakGroup.png";
 import LumeFlameAvatarSvg from "../assets/images/LumeFlameAvatar.svg";
-import bulletCircle from "../assets/images/Check-Circle.svg";
+// import bulletCircle from "../assets/images/Check-Circle.svg";
 import Xainab from "../assets/images/lumeChamp/Xainab.png";
 import ibrahim from "../assets/images/lumeChamp/ibrahim.png";
 import chimdi from "../assets/images/lumeChamp/chimdi.png";
@@ -35,7 +35,7 @@ import { Link } from "react-router-dom";
 
 
 function LandingPage() {
-  const [activeTab, setActiveTab] = useState("solo");
+  // const [activeTab, setActiveTab] = useState("solo");
   const [isOpen, setIsOpen] = useState(false);
 
   // const [formData, setFormData] = useState({
@@ -116,12 +116,12 @@ function LandingPage() {
               >
                 Leaderboard
               </a>
-              <a
+              {/* <a
                 href="#pricing"
                 className="hover:opacity-80 text-[16px] font-fredoka text-[#007BFF]"
               >
                 Pricing
-              </a>
+              </a> */}
             </div>
           </div>
 
@@ -152,12 +152,12 @@ function LandingPage() {
                 >
                   Leaderboard
                 </a>
-                <a
+                {/* <a
                   href="#pricing"
                   className="text-[16px] font-fredoka text-[white] hover:opacity-80"
                 >
                   Pricing
-                </a>
+                </a> */}
               </div>
             </div>
           )}
@@ -789,7 +789,7 @@ function LandingPage() {
         </motion.section>
 
         {/* Pricing plan */}
-        <div className="flex flex-col items-center py-6 sm:py-10" id="pricing">
+        {/* <div className="flex flex-col items-center py-6 sm:py-10" id="pricing">
           <motion.h2
             className="text-[#FF8C00] text-2xl sm:text-3xl md:text-4xl font-semibold font-fredoka"
             initial={{ opacity: 0, y: -20 }}
@@ -808,7 +808,6 @@ function LandingPage() {
             Choose Your Path!
           </motion.h1>
 
-          {/* Tab Switcher */}
           <motion.div
             className="flex bg-[#AA5D00] rounded-full p-1 mt-4"
             initial={{ scale: 0.8 }}
@@ -835,7 +834,7 @@ function LandingPage() {
             </button>
           </motion.div>
 
-          {/* Pricing Cards */}
+        
           {activeTab === "solo" && (
             <motion.div
               className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10 md:gap-20 mt-8"
@@ -843,7 +842,7 @@ function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              {/* Monthly Plan */}
+             
               <motion.div
                 className="bg-orange-400 p-6 rounded-xl shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md text-black font-fredoka"
                 whileHover={{ scale: 1.05 }}
@@ -899,7 +898,7 @@ function LandingPage() {
                 </button>
               </motion.div>
 
-              {/* Yearly Plan */}
+            
               <motion.div
                 className="bg-blue-600 p-6 rounded-xl shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-lg text-white relative font-fredoka"
                 whileHover={{ scale: 1.05 }}
@@ -959,7 +958,7 @@ function LandingPage() {
               </motion.div>
             </motion.div>
           )}
-          {/*  */}
+        
           {activeTab !== "solo" && (
             <motion.div
               className="flex flex-col md:flex-row gap-20 mt-12"
@@ -967,7 +966,7 @@ function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              {/* Monthly Plan */}
+            
               <motion.div
                 className="bg-orange-400 p-6 rounded-xl shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md text-black font-fredoka"
                 whileHover={{ scale: 1.05 }}
@@ -1025,7 +1024,7 @@ function LandingPage() {
                 </button>
               </motion.div>
 
-              {/* Yearly Plan */}
+             
               <motion.div
                 className="bg-blue-600 p-6 rounded-xl shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md text-white relative font-fredoka"
                 whileHover={{ scale: 1.05 }}
@@ -1087,7 +1086,7 @@ function LandingPage() {
               </motion.div>
             </motion.div>
           )}
-        </div>
+        </div> */}
 
         {/* Footer */}
         <motion.footer
@@ -1149,7 +1148,7 @@ function LandingPage() {
               { name: "How it works", link: "#how-it-works" },
               { name: "Features", link: "#features" },
               { name: "Leaderboard", link: "#leaderboard" },
-              { name: "Pricing", link: "#pricing" },
+              // { name: "Pricing", link: "#pricing" },
               { name: "Support", link: "/support" },
               { name: "Privacy Policy", link: "/privacy" },
               { name: "Terms of Service", link: "/terms" },
