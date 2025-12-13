@@ -328,7 +328,8 @@ function LandingPage() {
               
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                 <motion.a
-                  href="https://play.google.com/store/apps/details?id=com.lumely.app"
+                  href="https://wf-artifacts.eascdn.net/builds/internal-st/0068b305-9534-452e-a387-5e27abff1318/9763dedf-d14b-49c1-ad98-284bcfc17c2e/019b1703-1e00-707f-bf14-131d26244a20/application-9763dedf-d14b-49c1-ad98-284bcfc17c2e.apk?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=75d871a1a44e598975dd84fa2341c9b0%2F20251213%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251213T094637Z&X-Amz-Expires=900&X-Amz-Signature=a5225033811068951f442495703e2c57394dbc6a079f91ccb92b09b34eda50aa&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
+                  download={true}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center bg-[#007BFF] text-white px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
@@ -349,7 +350,7 @@ function LandingPage() {
                 </motion.a>
                 
                 <motion.a
-                  href="https://apps.apple.com/app/lumely/id"
+                  href="https://apps.apple.com/us/app/lumely/id6753071708"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center bg-black text-white px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
