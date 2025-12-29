@@ -328,7 +328,7 @@ function LandingPage() {
               
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                 <motion.a
-                  href="https://expo.dev/accounts/lumelyapp/projects/lumely/builds/9763dedf-d14b-49c1-ad98-284bcfc17c2e"
+                  href="/apk/application-9763dedf-d14b-49c1-ad98-284bcfc17c2e.apk"
                   download={true}
                   target="_blank"
                   rel="noopener noreferrer"
