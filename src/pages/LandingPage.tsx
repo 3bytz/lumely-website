@@ -328,7 +328,7 @@ function LandingPage() {
               
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                 <motion.a
-                  href="/apk/application-9763dedf-d14b-49c1-ad98-284bcfc17c2e.apk"
+                  href="https://drive.google.com/uc?export=download&id=1TCdx-wNEzAyOtEklLM1yZ7qaHDp3i6-e"
                   download={true}
                   target="_blank"
                   rel="noopener noreferrer"
