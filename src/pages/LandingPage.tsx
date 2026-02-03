@@ -1,6 +1,15 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Mail, Instagram, Twitter } from "lucide-react";
+import {
+  Mail,
+  Instagram,
+  Twitter,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Maximize2,
+} from "lucide-react";
 import FooterLogo from "../assets/images/logo/Lumely logo 3.svg";
 import featureFireBall from "../assets/images/features/fireball.png";
 import LogoFlame from "../assets/images/logo/logoFlame.png";
@@ -8,7 +17,6 @@ import StreakBG from "../assets/images/StreakChamp.png";
 import StreakBlueBG from "../assets/images/streakBlueBG.png";
 import StreakVSGroup from "../assets/images/streakGroup.png";
 import LumeFlameAvatarSvg from "../assets/images/LumeFlameAvatar.svg";
-// import bulletCircle from "../assets/images/Check-Circle.svg";
 import Xainab from "../assets/images/lumeChamp/Xainab.png";
 import ibrahim from "../assets/images/lumeChamp/ibrahim.png";
 import chimdi from "../assets/images/lumeChamp/chimdi.png";
@@ -33,63 +41,136 @@ import GoalTrackingCard from "../components/GoalTrackingCard";
 import Layout from "../components/Layout";
 import { Link } from "react-router-dom";
 
-
 function LandingPage() {
-  // const [activeTab, setActiveTab] = useState("solo");
   const [isOpen, setIsOpen] = useState(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
 
-  // const [formData, setFormData] = useState({
-  //   email: "",
-  // });
+  // Video controls
+  const togglePlayPause = () => {
+    if (videoRef.current) {
+      if (isVideoPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsVideoPlaying(!isVideoPlaying);
+    }
+  };
 
-  // const [status, setStatus] = useState<
-  //   "idle" | "sending" | "success" | "error"
-  // >("idle");
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
 
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setStatus("sending");
+  const toggleFullscreen = () => {
+    if (!videoContainerRef.current) return;
 
-  //   try {
-  //     await emailjs.send(
-  //       EMAILJS_CONFIG.SERVICE_ID,
-  //       EMAILJS_CONFIG.TEMPLATE_ID,
-  //       {
-  //         to_email: EMAILJS_CONFIG.TO_EMAIL,
-  //         from_email: formData.email,
-  //       },
-  //       EMAILJS_CONFIG.PUBLIC_KEY
-  //     );
+    if (!isFullscreen) {
+      if (videoContainerRef.current.requestFullscreen) {
+        videoContainerRef.current.requestFullscreen();
+      } else if ((videoContainerRef.current as any).webkitRequestFullscreen) {
+        (videoContainerRef.current as any).webkitRequestFullscreen();
+      } else if ((videoContainerRef.current as any).msRequestFullscreen) {
+        (videoContainerRef.current as any).msRequestFullscreen();
+      }
+      setIsFullscreen(true);
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if ((document as any).webkitExitFullscreen) {
+        (document as any).webkitExitFullscreen();
+      } else if ((document as any).msExitFullscreen) {
+        (document as any).msExitFullscreen();
+      }
+      setIsFullscreen(false);
+    }
+  };
 
-  //     await emailjs.send(
-  //       EMAILJS_CONFIG.SERVICE_ID,
-  //       EMAILJS_CONFIG.USER_TEMPLATE_ID,
-  //       {
-  //         to_email: formData.email,
-  //         from_email: EMAILJS_CONFIG.TO_EMAIL,
-  //         logo_url: EMAILJS_CONFIG.LOGO_URL,
-  //         subject: "Welcome to Lumely Waitlist! 🎉",
-  //         twitter_url: "https://twitter.com/",
-  //         instagram_url: "https://instagram.com/",
-  //         support_email: "info@lumely.io",
-  //       },
-  //       EMAILJS_CONFIG.PUBLIC_KEY
-  //     );
+  const handleFullscreenChange = () => {
+    setIsFullscreen(!!document.fullscreenElement);
+  };
 
-  //     setStatus("success");
-  //     setFormData({ email: "" });
-  //   } catch (error) {
-  //     console.error("Failed to send email:", error);
-  //     setStatus("error");
-  //   }
-  // };
+  const handleVideoTimeUpdate = () => {
+    if (videoRef.current) {
+      setCurrentTime(videoRef.current.currentTime);
+    }
+  };
+
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!videoRef.current || !videoContainerRef.current) return;
+
+    const rect = videoContainerRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const percentage = x / rect.width;
+    const newTime = percentage * duration;
+
+    videoRef.current.currentTime = newTime;
+    setCurrentTime(newTime);
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const handleVideoEnded = () => {
+    setIsVideoPlaying(false);
+  };
+
+  const handleVideoError = () => {
+    setHasError(true);
+    setIsLoading(false);
+  };
+
+  const handleVideoLoaded = () => {
+    setIsLoading(false);
+    setHasError(false);
+    if (videoRef.current) {
+      setDuration(videoRef.current.duration);
+    }
+  };
+
+  const handleVideoLoadedMetadata = () => {
+    if (videoRef.current) {
+      setDuration(videoRef.current.duration);
+    }
+  };
+
+  useState(() => {
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+    document.addEventListener("msfullscreenchange", handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener(
+        "webkitfullscreenchange",
+        handleFullscreenChange,
+      );
+      document.removeEventListener(
+        "msfullscreenchange",
+        handleFullscreenChange,
+      );
+    };
+  });
 
   return (
     <Layout>
       <div className="min-h-screen bg-white">
         {/* <CountdownTimer /> */}
         {/* Navigation */}
-        <nav className="container mx-auto px-4 py-6 flex items-center justify-between">
+        <nav className="container-fluid mx-auto px-4 py-6 flex items-center justify-between">
           {/* Logo Section */}
           <div>
             <img src={FooterLogo} alt="Logo missing" className="w-[120px]" />
@@ -97,7 +178,7 @@ function LandingPage() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-12 items-center justify-between bg-white rounded border border-[#EBF3FF] px-6 py-2">
-            <div className="flex space-x-12 items-center w-[513px] p-3 gap-2 bg-[#f9fbff] rounded border border-[#EBF3FF]">
+            <div className="flex space-x-12 items-center w-[613px] p-3 gap-2 bg-[#f9fbff] rounded border border-[#EBF3FF]">
               <a
                 href="#how-it-works"
                 className="hover:opacity-80 text-[16px] font-fredoka text-[#007BFF]"
@@ -115,6 +196,12 @@ function LandingPage() {
                 className="hover:opacity-80 text-[16px] font-fredoka text-[#007BFF]"
               >
                 Leaderboard
+              </a>
+              <a
+                href="#app-video"
+                className="hover:opacity-80 text-[16px] font-fredoka text-[#007BFF]"
+              >
+                Watch Demo
               </a>
               {/* <a
                 href="#pricing"
@@ -152,6 +239,12 @@ function LandingPage() {
                 >
                   Leaderboard
                 </a>
+                <a
+                  href="#app-video"
+                  className="text-[16px] font-fredoka text-[white] hover:opacity-80"
+                >
+                  Watch Demo
+                </a>
                 {/* <a
                   href="#pricing"
                   className="text-[16px] font-fredoka text-[white] hover:opacity-80"
@@ -163,9 +256,13 @@ function LandingPage() {
           )}
 
           {/* CTA Button */}
-          <button className="text-white text-center h-[68px] text-[18px] font-bold font-[Fredoka] text-shadow-[0px_2px_10px_#B0C] stroke-[1px] stroke-[#8C0099] px-12 py-3 bg-[url('/src/assets/images/howitworks/startWiningbutton2.png')] bg-contain bg-center bg-no-repeat hover:opacity-90 hidden md:block">
-            <span className="invisible">Start Winning</span>
-          </button>
+          <a
+            href="#app-video"
+            className="text-white text-center h-[48px] text-[18px] font-bold font-fredoka px-12 py-3 hidden md:block rounded-lg bg-[#007BFF] border-2 border-[#0057E2] hover:bg-[#0057E2] hover:border-[#003DA3] transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
+          >
+            See Demo
+          </a>
+
         </nav>
 
         {/* Hero Section */}
@@ -204,53 +301,7 @@ function LandingPage() {
               stay consistent, and challenge yourself with real rewards.
             </motion.p>
 
-            {/* Input and Button */}
-            {/* <motion.div
-              className="flex flex-col sm:flex-col items-center gap-4 mt-6"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.5, duration: 1 }}
-            >
-              <form
-                className="flex flex-col sm:flex-row items-center gap-4 "
-                onSubmit={handleSubmit}
-              >
-                <div className="relative w-full sm:w-96">
-                  <input
-                    required
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        email: e.target.value,
-                      }))
-                    }
-                    type="email"
-                    placeholder="Email here"
-                    className="px-8 py-5 w-full text-[#0057E2] bg-white rounded-full focus:outline-none focus:ring-0 shadow-none border-2 border-transparent bg-clip-padding relative z-10"
-                  />
-                  <div className="absolute inset-0 rounded-full p-[2px] bg-gradient-to-r from-[#68A2FF] via-transparent to-transparent"></div>
-                </div>
-
-                <button
-                  type="submit"
-                  className="px-8 sm:px-12 py-3 sm:py-4 text-white font-bold bg-[url('/src/assets/images/hero/WaitListbutton.png')] bg-contain bg-center bg-no-repeat"
-                >
-                  {status === "sending" ? "Sending..." : " Join waiting list"}
-                </button>
-              </form>
-              {status === "success" && (
-                <p className="text-green-600 text-center">
-                  Subscription sent successfully!
-                </p>
-              )}
-              {status === "error" && (
-                <p className="text-red-600 text-center">
-                  Failed to send subscription. Please try again.
-                </p>
-              )}
-            </motion.div> */}
-
+           
             {/* Hero Images */}
             <motion.div
               className="w-full flex flex-col justify-center items-center relative mt-10 sm:mt-16"
@@ -281,17 +332,6 @@ function LandingPage() {
                 }}
                 alt="Flame"
               />
-              {/* <motion.img
-                src="https://s3-alpha-sig.figma.com/img/ad10/08a6/055d41b8dd78b6e696cd11aed4d3ff3f?Expires=1743379200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=FSWmBGDo-tB7EPdNamx2rd16brjBXJi-xh0XlAry--EKwpvvPzCjN9FoBUptEQUR7SHdW0dcRnTPnXLiAxzrXrGX53m8frSRbTNZ4F9qZ9cujvpSx77CrcqDnbHw7ekt~7H2g1OwBaqhkSiiasbwzd0mqMEZ8p-63M4-9KdMgw29t0EBKLk6Rh1sIHZkEAkBrLp~9OZTATNI8xh3pYpM3oCtX-Newta2lRNJgkZlGADEYxBOvDtC872agrHFmz9iGgoY1Tsxyc68P4qMYHfB~LhlhxbQHDoXAXREMQTU35k3eAHZxZEwYGM6pP~CzGousOkbXZE00-KO8s~TUY4mSQ__"
-                className="absolute top-[-20px] sm:top-[-40px] right-6 sm:right-12 w-10 sm:w-14 md:left-48 md:top-[-280px]"
-                animate={{ rotate: [0, 10, 0, -10, 0] }}
-                transition={{
-                  repeat: Infinity,
-                  duration: 3,
-                  ease: "easeInOut",
-                }}
-                alt="Floating Element"
-              /> */}
             </motion.div>
           </div>
         </section>
@@ -299,14 +339,14 @@ function LandingPage() {
         {/* App Download Section */}
         <section className="py-16 bg-gradient-to-b from-white to-blue-50">
           <div className="container mx-auto px-4">
-            <motion.div 
+            <motion.div
               className="flex flex-col items-center text-center"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <motion.h2 
+              <motion.h2
                 className="text-3xl md:text-4xl font-bold text-[#007BFF] mb-6 font-fredoka"
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
@@ -315,17 +355,18 @@ function LandingPage() {
               >
                 Get the App Now!
               </motion.h2>
-              
-              <motion.p 
+
+              <motion.p
                 className="text-lg text-[#444] mb-10 max-w-2xl mx-auto"
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
                 viewport={{ once: true }}
               >
-                Start building winning habits today. Download Lumely on your device and begin your journey to success.
+                Start building winning habits today. Download Lumely on your
+                device and begin your journey to success.
               </motion.p>
-              
+
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                 <motion.a
                   href="https://drive.google.com/uc?export=download&id=1TCdx-wNEzAyOtEklLM1yZ7qaHDp3i6-e"
@@ -340,15 +381,19 @@ function LandingPage() {
                   transition={{ duration: 0.6, delay: 0.6 }}
                   viewport={{ once: true }}
                 >
-                  <svg className="w-8 h-8 mr-3" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.789 19.092L15.5 18.208 6.604 9.312 15.5.416l-1.102-2.23-12 12a1.5 1.5 0 0 0 0 2.122l12 12z"/>
+                  <svg
+                    className="w-8 h-8 mr-3"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.789 19.092L15.5 18.208 6.604 9.312 15.5.416l-1.102-2.23-12 12a1.5 1.5 0 0 0 0 2.122l12 12z" />
                   </svg>
                   <div className="text-left">
                     <div className="text-xs">GET IT ON</div>
                     <div className="text-xl font-bold">Google Play</div>
                   </div>
                 </motion.a>
-                
+
                 <motion.a
                   href="https://apps.apple.com/us/app/lumely/id6753071708"
                   target="_blank"
@@ -361,8 +406,12 @@ function LandingPage() {
                   transition={{ duration: 0.6, delay: 0.8 }}
                   viewport={{ once: true }}
                 >
-                  <svg className="w-8 h-8 mr-3" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M17.05 12.04C17.05 8.02 19.69 5.58 19.82 5.47C18.25 3.3 15.91 3.2 15.13 3.2C13.39 3.2 11.73 4.25 10.74 4.25C9.71 4.25 8.23 3.24 6.73 3.27C4.82 3.3 3.1 4.33 2.22 6.03C0.25 9.58 1.58 15.06 3.5 17.94C4.42 19.24 5.5 20.7 6.86 20.64C8.19 20.58 8.73 19.75 10.36 19.75C11.97 19.75 12.48 20.64 13.88 20.61C15.32 20.58 16.26 19.27 17.14 17.97C18.17 16.5 18.58 15.07 18.6 15C18.57 14.98 17.05 14.09 17.05 12.04ZM14.83 2.5C15.49 1.65 15.97 0.5 15.83 -0.67C14.83 -0.63 13.63 0.03 12.94 0.88C12.33 1.63 11.75 2.82 11.9 3.97C12.99 4.05 14.14 3.38 14.83 2.5Z"/>
+                  <svg
+                    className="w-8 h-8 mr-3"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M17.05 12.04C17.05 8.02 19.69 5.58 19.82 5.47C18.25 3.3 15.91 3.2 15.13 3.2C13.39 3.2 11.73 4.25 10.74 4.25C9.71 4.25 8.23 3.24 6.73 3.27C4.82 3.3 3.1 4.33 2.22 6.03C0.25 9.58 1.58 15.06 3.5 17.94C4.42 19.24 5.5 20.7 6.86 20.64C8.19 20.58 8.73 19.75 10.36 19.75C11.97 19.75 12.48 20.64 13.88 20.61C15.32 20.58 16.26 19.27 17.14 17.97C18.17 16.5 18.58 15.07 18.6 15C18.57 14.98 17.05 14.09 17.05 12.04ZM14.83 2.5C15.49 1.65 15.97 0.5 15.83 -0.67C14.83 -0.63 13.63 0.03 12.94 0.88C12.33 1.63 11.75 2.82 11.9 3.97C12.99 4.05 14.14 3.38 14.83 2.5Z" />
                   </svg>
                   <div className="text-left">
                     <div className="text-xs">DOWNLOAD ON THE</div>
@@ -370,7 +419,7 @@ function LandingPage() {
                   </div>
                 </motion.a>
               </div>
-              
+
               {/* Animated decorative elements */}
               <motion.div
                 className="absolute -z-10 opacity-10"
@@ -382,13 +431,13 @@ function LandingPage() {
                   rotate: {
                     repeat: Infinity,
                     duration: 20,
-                    ease: "linear"
+                    ease: "linear",
                   },
                   scale: {
                     repeat: Infinity,
                     duration: 4,
-                    ease: "easeInOut"
-                  }
+                    ease: "easeInOut",
+                  },
                 }}
               >
                 <svg width="300" height="300" viewBox="0 0 100 100">
@@ -520,6 +569,368 @@ function LandingPage() {
               >
                 <span className="invisible">Start Winning</span>
               </motion.button>
+            </motion.div>
+          </div>
+        </section>
+
+        <section
+          id="app-video"
+          className="py-20 bg-gradient-to-b from-blue-50 to-white"
+        >
+          <div className="container mx-auto px-4">
+            <motion.div
+              className="text-center mb-12"
+              initial={{ opacity: 0, y: -30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl md:text-4xl font-bold text-[#007BFF] mb-4 font-fredoka">
+                See Lumely in Action
+              </h2>
+              <p className="text-lg text-[#444] max-w-2xl mx-auto font-fredoka">
+                Watch the demo video to see how Lumely transforms
+                goal-setting into winning habits
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="max-w-6xl mx-auto"
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              <div
+                ref={videoContainerRef}
+                className="relative bg-gradient-to-br from-blue-100 to-white rounded-3xl overflow-hidden shadow-2xl border-4 border-white group cursor-pointer"
+                onClick={(e) => {
+                  
+                  if (!(e.target as HTMLElement).closest(".video-control")) {
+                    togglePlayPause();
+                  }
+                }}
+              >
+                {/* Loading State */}
+                {isLoading && !hasError && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-50 to-white z-20">
+                    <div className="text-center">
+                      <div className="w-16 h-16 border-4 border-[#007BFF] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                      <p className="text-[#007BFF] font-fredoka text-lg">
+                        Loading HD video...
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Error State */}
+                {hasError && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-50 to-white z-20">
+                    <div className="text-center p-8">
+                      <div className="text-red-500 text-6xl mb-4">⚠️</div>
+                      <h3 className="text-2xl font-bold text-red-600 mb-2 font-fredoka">
+                        Video Unavailable
+                      </h3>
+                      <p className="text-gray-600 mb-4">
+                        We're unable to load the HD demo video at the moment.
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                        <button
+                          onClick={() => {
+                            setHasError(false);
+                            setIsLoading(true);
+                          }}
+                          className="px-6 py-2 bg-[#007BFF] text-white rounded-lg hover:bg-[#0057E2] transition-colors font-fredoka"
+                        >
+                          Retry Loading
+                        </button>
+                        <a
+                          href="/lumely-app-demo.mp4"
+                          download
+                          className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-fredoka"
+                        >
+                          Download Video
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Video Element - Fixed 16:9 aspect ratio */}
+                <div className="relative w-full pt-[56.25%]">
+                  {" "}
+                  
+                  <video
+                    ref={videoRef}
+                    className="absolute top-0 left-0 w-full h-full object-cover"
+                    poster="/demo-video-poster.jpg" 
+                    onEnded={handleVideoEnded}
+                    onError={handleVideoError}
+                    onLoadedData={handleVideoLoaded}
+                    onLoadedMetadata={handleVideoLoadedMetadata}
+                    onTimeUpdate={handleVideoTimeUpdate}
+                    playsInline
+                    preload="auto"
+                    controls={false}
+                  >
+                    <source src="/lumelyHowToUse.MP4" type="video/mp4" />
+                    <source src="/lumely-app-demo.webm" type="video/webm" />
+                    <track
+                      kind="captions"
+                      src="/captions.vtt"
+                      srcLang="en"
+                      label="English"
+                      default
+                    />
+                    Your browser does not support the video tag. Please download
+                    the video
+                    <a
+                      href="/lumelyHowToUse.MP4"
+                      className="text-[#007BFF] underline"
+                    >
+                      here
+                    </a>
+                    .
+                  </video>
+                </div>
+
+                {/* Video Controls Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 z-10">
+                  {/* Top Controls */}
+                  <div className="absolute top-4 left-4 right-4 flex justify-between items-center">
+                    {/* Video Title */}
+                    <div className="text-white font-fredoka font-semibold text-lg bg-black/30 px-3 py-1 rounded-lg">
+                      Lumely App Demo - HD 1080p
+                    </div>
+
+                    {/* Right Controls */}
+                    <div className="flex items-center space-x-3">
+                      {/* Mute/Unmute Button */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleMute();
+                        }}
+                        className="video-control p-2 bg-black/50 rounded-full text-white hover:bg-black/70 transition-colors"
+                        aria-label={isMuted ? "Unmute video" : "Mute video"}
+                      >
+                        {isMuted ? (
+                          <VolumeX size={24} />
+                        ) : (
+                          <Volume2 size={24} />
+                        )}
+                      </button>
+
+                      {/* Fullscreen Button */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleFullscreen();
+                        }}
+                        className="video-control p-2 bg-black/50 rounded-full text-white hover:bg-black/70 transition-colors"
+                        aria-label={
+                          isFullscreen ? "Exit fullscreen" : "Enter fullscreen"
+                        }
+                      >
+                        <Maximize2 size={24} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Center Play/Pause Button - Shows when paused */}
+                  {!isVideoPlaying && !isLoading && !hasError && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        togglePlayPause();
+                      }}
+                      className="video-control absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-6 bg-[#007BFF]/90 rounded-full text-white hover:bg-[#0057E2] transition-all duration-300 hover:scale-110 shadow-2xl"
+                      aria-label="Play video"
+                    >
+                      <Play size={64} className="fill-white ml-2" />
+                    </button>
+                  )}
+
+                  {/* Bottom Controls */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                    {/* Progress Bar - Clickable */}
+                    <div
+                      className="h-2 bg-white/30 rounded-full mb-3 overflow-hidden cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSeek(e);
+                      }}
+                    >
+                      <div
+                        className="h-full bg-[#007BFF] rounded-full transition-all duration-300 relative"
+                        style={{
+                          width: duration
+                            ? `${(currentTime / duration) * 100}%`
+                            : "0%",
+                        }}
+                      >
+                        {/* Progress Handle */}
+                        <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-lg"></div>
+                      </div>
+                    </div>
+
+                    {/* Time and Controls Row */}
+                    <div className="flex justify-between items-center">
+                      {/* Left Side - Current Time and Play/Pause */}
+                      <div className="flex items-center space-x-4">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            togglePlayPause();
+                          }}
+                          className="video-control p-2 text-white hover:bg-white/20 rounded-full transition-colors"
+                          aria-label={
+                            isVideoPlaying ? "Pause video" : "Play video"
+                          }
+                        >
+                          {isVideoPlaying ? (
+                            <Pause size={24} className="fill-white" />
+                          ) : (
+                            <Play size={24} className="fill-white ml-0.5" />
+                          )}
+                        </button>
+                        <span className="text-white font-medium text-sm">
+                          {formatTime(currentTime)} / {formatTime(duration)}
+                        </span>
+                      </div>
+
+                      {/* Right Side - Volume and Fullscreen */}
+                      <div className="flex items-center space-x-3">
+                        <div className="text-white text-sm font-medium">
+                          {Math.round((currentTime / duration) * 100) || 0}%
+                          watched
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Play/Pause overlay for when controls are hidden */}
+                {isVideoPlaying && (
+                  <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          togglePlayPause();
+                        }}
+                        className="video-control p-4 bg-black/60 rounded-full text-white hover:bg-black/80 transition-all duration-300 hover:scale-110 opacity-0 group-hover:opacity-100"
+                        aria-label="Pause video"
+                      >
+                        <Pause size={48} className="fill-white" />
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Video Chapters/Highlights */}
+              <motion.div
+                className="mt-12 bg-white rounded-2xl p-8 shadow-lg border border-gray-100"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+                viewport={{ once: true }}
+              >
+                <h3 className="text-2xl font-bold text-[#007BFF] mb-6 font-fredoka text-center">
+                  What You'll See in the Demo
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {[
+                    {
+                      time: "0:00 - 1:30",
+                      title: "Getting Started",
+                      description: "App onboarding and goal setting",
+                    },
+                    {
+                      time: "1:30 - 3:15",
+                      title: "Habit Tracking",
+                      description: "Daily check-ins and progress tracking",
+                    },
+                    {
+                      time: "3:15 - 4:45",
+                      title: "Social Features",
+                      description: "Challenges and leaderboards",
+                    },
+                  ].map((chapter, index) => (
+                    <div
+                      key={index}
+                      className="p-5 bg-blue-50 rounded-xl border border-blue-100 hover:border-blue-300 transition-colors duration-300"
+                    >
+                      {/* <div className="text-sm font-semibold text-[#007BFF] mb-2 font-fredoka">
+                        {chapter.time}
+                      </div> */}
+                      <h4 className="text-lg font-bold text-gray-800 mb-2">
+                        {chapter.title}
+                      </h4>
+                      <p className="text-gray-600 text-sm">
+                        {chapter.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+
+              {/* Download CTA after video */}
+              <motion.div
+                className="text-center mt-12 w-9/12 mx-auto"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.8 }}
+                viewport={{ once: true }}
+              >
+                <p className="text-xl text-[#444] mb-6 font-fredoka">
+                  Ready to experience Lumely yourself?
+                </p>
+                <div className="flex flex-col sm:flex-row justify-center gap-4">
+                  <a
+                    href="https://drive.google.com/uc?export=download&id=1TCdx-wNEzAyOtEklLM1yZ7qaHDp3i6-e"
+                    download={true}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-8 py-3 bg-[#007BFF] text-white rounded-lg hover:bg-[#0057E2] transition-colors font-fredoka font-semibold text-lg flex items-center justify-center gap-3"
+                  >
+                    <svg
+                      className="w-6 h-6"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.789 19.092L15.5 18.208 6.604 9.312 15.5.416l-1.102-2.23-12 12a1.5 1.5 0 0 0 0 2.122l12 12z" />
+                    </svg>
+                    Download for Android
+                  </a>
+                  <a
+                    href="https://apps.apple.com/us/app/lumely/id6753071708"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-8 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-fredoka font-semibold text-lg flex items-center justify-center gap-3"
+                  >
+                    <svg
+                      className="w-6 h-6"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path d="M17.05 12.04C17.05 8.02 19.69 5.58 19.82 5.47C18.25 3.3 15.91 3.2 15.13 3.2C13.39 3.2 11.73 4.25 10.74 4.25C9.71 4.25 8.23 3.24 6.73 3.27C4.82 3.3 3.1 4.33 2.22 6.03C0.25 9.58 1.58 15.06 3.5 17.94C4.42 19.24 5.5 20.7 6.86 20.64C8.19 20.58 8.73 19.75 10.36 19.75C11.97 19.75 12.48 20.64 13.88 20.61C15.32 20.58 16.26 19.27 17.14 17.97C18.17 16.5 18.58 15.07 18.6 15C18.57 14.98 17.05 14.09 17.05 12.04ZM14.83 2.5C15.49 1.65 15.97 0.5 15.83 -0.67C14.83 -0.63 13.63 0.03 12.94 0.88C12.33 1.63 11.75 2.82 11.9 3.97C12.99 4.05 14.14 3.38 14.83 2.5Z" />
+                    </svg>
+                    Download for iOS
+                  </a>
+                </div>
+                <p className="text-gray-500 text-sm mt-4">
+                  Can't play the video?{" "}
+                  <a
+                    href="/lumely-app-demo.mp4"
+                    download
+                    className="text-[#007BFF] underline hover:no-underline"
+                  >
+                    Download the MP4 file
+                  </a>
+                </p>
+              </motion.div>
             </motion.div>
           </div>
         </section>
@@ -789,306 +1200,7 @@ function LandingPage() {
           </div>
         </motion.section>
 
-        {/* Pricing plan */}
-        {/* <div className="flex flex-col items-center py-6 sm:py-10" id="pricing">
-          <motion.h2
-            className="text-[#FF8C00] text-2xl sm:text-3xl md:text-4xl font-semibold font-fredoka"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            PRICING
-          </motion.h2>
-
-          <motion.h1
-            className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#331C00] font-fredoka"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            Choose Your Path!
-          </motion.h1>
-
-          <motion.div
-            className="flex bg-[#AA5D00] rounded-full p-1 mt-4"
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            <button
-              className={`px-6 sm:px-12 md:px-24 py-3 text-sm sm:text-lg font-semibold rounded-full transition-all duration-300 font-fredoka ${
-                activeTab === "solo"
-                  ? "bg-orange-300 text-[#FFE8CC]"
-                  : "text-[#FFE8CC]"
-              }`}
-              onClick={() => setActiveTab("solo")}
-            >
-              Solo Plan
-            </button>
-            <button
-              className={`px-6 sm:px-12 py-3 text-sm sm:text-lg font-semibold rounded-full transition-all duration-300 font-fredoka ${
-                activeTab === "battle" ? "bg-orange-300" : "text-[#FFE8CC]"
-              }`}
-              onClick={() => setActiveTab("battle")}
-            >
-              Battle Plan (For 5 Friends)
-            </button>
-          </motion.div>
-
-        
-          {activeTab === "solo" && (
-            <motion.div
-              className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10 md:gap-20 mt-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-             
-              <motion.div
-                className="bg-orange-400 p-6 rounded-xl shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md text-black font-fredoka"
-                whileHover={{ scale: 1.05 }}
-              >
-                <h3 className="text-xl sm:text-2xl font-bold text-white">
-                  ₦3,000
-                </h3>
-                <p className="text-sm">Per Month</p>
-                <ul className="mt-4 space-y-2 text-sm">
-                  <li className="flex items-center">
-                    <img
-                      src={bulletCircle}
-                      alt="check"
-                      className="w-4 h-4 mr-2"
-                    />
-                    Habit tracking & progress insights
-                  </li>
-                  <li className="flex items-center">
-                    <img
-                      src={bulletCircle}
-                      alt="check"
-                      className="w-4 h-4 mr-2"
-                    />
-                    AI-powered motivation & reminders
-                  </li>
-                  <li className="flex items-center">
-                    <img
-                      src={bulletCircle}
-                      alt="check"
-                      className="w-4 h-4 mr-2"
-                    />{" "}
-                    Streak rewards & milestone celebrations
-                  </li>
-                  <li className="flex items-center">
-                    <img
-                      src={bulletCircle}
-                      alt="check"
-                      className="w-4 h-4 mr-2"
-                    />{" "}
-                    Access to exclusive community challenges
-                  </li>
-                  <li className="flex items-center">
-                    <img
-                      src={bulletCircle}
-                      alt="check"
-                      className="w-4 h-4 mr-2"
-                    />{" "}
-                    Stand a chance to win in the Lume Raffle Draw
-                  </li>
-                </ul>
-                <button className="mt-4 w-full bg-gradient-to-r from-orange-500 to-purple-500 py-2 rounded-lg font-semibold text-white">
-                  Subscribe
-                </button>
-              </motion.div>
-
-            
-              <motion.div
-                className="bg-blue-600 p-6 rounded-xl shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-lg text-white relative font-fredoka"
-                whileHover={{ scale: 1.05 }}
-              >
-                <span className="absolute top-2 right-2 bg-white text-blue-600 text-xs px-2 py-1 rounded-lg">
-                  Get 2-month free
-                </span>
-                <h3 className="text-xl sm:text-2xl font-bold text-white">
-                  ₦30,000
-                </h3>
-                <p className="text-sm">Per Year</p>
-                <ul className="mt-4 space-y-2 text-sm">
-                  <li className="flex items-center">
-                    <img
-                      src={bulletCircle}
-                      alt="check"
-                      className="w-4 h-4 mr-2"
-                    />
-                    Habit tracking & progress insights
-                  </li>
-                  <li className="flex items-center">
-                    <img
-                      src={bulletCircle}
-                      alt="check"
-                      className="w-4 h-4 mr-2"
-                    />
-                    AI-powered motivation & reminders
-                  </li>
-                  <li className="flex items-center">
-                    <img
-                      src={bulletCircle}
-                      alt="check"
-                      className="w-4 h-4 mr-2"
-                    />{" "}
-                    Streak rewards & milestone celebrations
-                  </li>
-                  <li className="flex items-center">
-                    <img
-                      src={bulletCircle}
-                      alt="check"
-                      className="w-4 h-4 mr-2"
-                    />{" "}
-                    Access to exclusive community challenges
-                  </li>
-                  <li className="flex items-center">
-                    <img
-                      src={bulletCircle}
-                      alt="check"
-                      className="w-4 h-4 mr-2"
-                    />{" "}
-                    Stand a chance to win in the Lume Raffle Draw
-                  </li>
-                </ul>
-                <button className="mt-4 w-full bg-gradient-to-r from-orange-500 to-purple-500 py-2 rounded-lg font-semibold">
-                  Subscribe
-                </button>
-              </motion.div>
-            </motion.div>
-          )}
-        
-          {activeTab !== "solo" && (
-            <motion.div
-              className="flex flex-col md:flex-row gap-20 mt-12"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-            
-              <motion.div
-                className="bg-orange-400 p-6 rounded-xl shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md text-black font-fredoka"
-                whileHover={{ scale: 1.05 }}
-              >
-                <h3 className="text-2xl font-bold text-white text-start text-[36px] leading-normal tracking-[-0.72px]">
-                  ₦10,000
-                </h3>
-                <p className="text-sm">Per Month</p>
-                <ul className="mt-4 space-y-2 text-sm">
-                  <li className="flex items-center">
-                    <img
-                      src={bulletCircle}
-                      alt="check"
-                      className="w-4 h-4 mr-2"
-                    />{" "}
-                    Challenge your friends – Track habits together & stay
-                    accountable
-                  </li>
-                  <li className="flex items-center">
-                    <img
-                      src={bulletCircle}
-                      alt="check"
-                      className="w-4 h-4 mr-2"
-                    />{" "}
-                    Leaderboard rankings – Climb the board & stay motivated
-                  </li>
-                  <li className="flex items-center">
-                    <img
-                      src={bulletCircle}
-                      alt="check"
-                      className="w-4 h-4 mr-2"
-                    />{" "}
-                    Exclusive rewards – Win streak bonuses & unlock achievements
-                  </li>
-                  <li className="flex items-center">
-                    <img
-                      src={bulletCircle}
-                      alt="check"
-                      className="w-4 h-4 mr-2"
-                    />{" "}
-                    Access to exclusive community challenges
-                  </li>
-                  <li className="flex items-center">
-                    <img
-                      src={bulletCircle}
-                      alt="check"
-                      className="w-4 h-4 mr-2"
-                    />{" "}
-                    Join the Monthly Lume Raffle Draw – Just complete your daily
-                    tasks!
-                  </li>
-                </ul>
-                <button className="mt-4 w-full bg-gradient-to-r from-orange-500 to-purple-500 py-2 font-fredoka rounded-lg font-semibold text-white">
-                  Subscribe
-                </button>
-              </motion.div>
-
-             
-              <motion.div
-                className="bg-blue-600 p-6 rounded-xl shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md text-white relative font-fredoka"
-                whileHover={{ scale: 1.05 }}
-              >
-                <span className="absolute top-2 right-2 bg-white text-blue-600 text-xs px-2 py-1 rounded-lg">
-                  Get 2-month free
-                </span>
-                <h3 className="text-2xl font-bold text-white text-start text-[36px] leading-normal tracking-[-0.72px]">
-                  ₦100,000
-                </h3>
-                <p className="text-sm">Per Year</p>
-                <ul className="mt-4 space-y-2 text-sm">
-                  <li className="flex items-center">
-                    <img
-                      src={bulletCircle}
-                      alt="check"
-                      className="w-4 h-4 mr-2"
-                    />{" "}
-                    Challenge your friends – Track habits together & stay
-                    accountable
-                  </li>
-                  <li className="flex items-center">
-                    <img
-                      src={bulletCircle}
-                      alt="check"
-                      className="w-4 h-4 mr-2"
-                    />{" "}
-                    Leaderboard rankings – Climb the board & stay motivated
-                  </li>
-                  <li className="flex items-center">
-                    <img
-                      src={bulletCircle}
-                      alt="check"
-                      className="w-4 h-4 mr-2"
-                    />{" "}
-                    Exclusive rewards – Win streak bonuses & unlock achievements
-                  </li>
-                  <li className="flex items-center">
-                    <img
-                      src={bulletCircle}
-                      alt="check"
-                      className="w-4 h-4 mr-2"
-                    />{" "}
-                    Access to exclusive community challenges
-                  </li>
-                  <li className="flex items-center">
-                    <img
-                      src={bulletCircle}
-                      alt="check"
-                      className="w-4 h-4 mr-2"
-                    />{" "}
-                    Join the Monthly Lume Raffle Draw – Just complete your daily
-                    tasks!
-                  </li>
-                </ul>
-                <button className="mt-4 w-full bg-gradient-to-r from-orange-500 to-purple-500 py-2 rounded-lg font-semibold font-fredoka">
-                  Subscribe
-                </button>
-              </motion.div>
-            </motion.div>
-          )}
-        </div> */}
-
+      
         {/* Footer */}
         <motion.footer
           className="bg-white py-12 relative"
@@ -1096,7 +1208,7 @@ function LandingPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <div className="container mx-auto px-4 flex flex-col gap-12 relative">
+          <div className="container-fluid mx-auto px-4 flex flex-col gap-12 relative">
             {/* Contact Section */}
             <motion.div
               className="grid grid-cols-1 md:grid-cols-2 gap-6"
@@ -1138,41 +1250,42 @@ function LandingPage() {
               Quick Links
             </motion.div>
 
-             <motion.div
-            className="flex flex-wrap justify-start items-center gap-4 md:gap-6 py-3 px-4 bg-[#DBE9FFAD] rounded-[2px] border border-[rgba(219, 233, 255, 0.68)] w-full md:w-5/12"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-          >
-            {[
-              { name: "Home", link: "/" },
-              { name: "How it works", link: "#how-it-works" },
-              { name: "Features", link: "#features" },
-              { name: "Leaderboard", link: "#leaderboard" },
-              // { name: "Pricing", link: "#pricing" },
-              { name: "Support", link: "/support" },
-              { name: "Privacy Policy", link: "/privacy" },
-              { name: "Terms of Service", link: "/terms" },
-            ].map((link, index) => (
-              link.link.startsWith('/') ? (
-                <Link
-                  key={index}
-                  to={link.link}
-                  className="text-[#498FFF] text-sm md:text-[16px] font-bold hover:text-[#0057E2] transition-colors duration-300"
-                >
-                  {link.name}
-                </Link>
-              ) : (
-                <a
-                  key={index}
-                  href={link.link}
-                  className="text-[#498FFF] text-sm md:text-[16px] font-bold hover:text-[#0057E2] transition-colors duration-300"
-                >
-                  {link.name}
-                </a>
-              )
-            ))}
-          </motion.div>
+            <motion.div
+              className="flex flex-wrap justify-start items-center gap-4 md:gap-6 py-3 px-4 bg-[#DBE9FFAD] rounded-[2px] border border-[rgba(219, 233, 255, 0.68)] w-full md:w-5/12"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+            >
+              {[
+                { name: "Home", link: "/" },
+                { name: "How it works", link: "#how-it-works" },
+                { name: "Features", link: "#features" },
+                { name: "Leaderboard", link: "#leaderboard" },
+                { name: "Watch Demo", link: "#app-video" },
+                // { name: "Pricing", link: "#pricing" },
+                { name: "Support", link: "/support" },
+                { name: "Privacy Policy", link: "/privacy" },
+                { name: "Terms of Service", link: "/terms" },
+              ].map((link, index) =>
+                link.link.startsWith("/") ? (
+                  <Link
+                    key={index}
+                    to={link.link}
+                    className="text-[#498FFF] text-sm md:text-[16px] font-bold hover:text-[#0057E2] transition-colors duration-300"
+                  >
+                    {link.name}
+                  </Link>
+                ) : (
+                  <a
+                    key={index}
+                    href={link.link}
+                    className="text-[#498FFF] text-sm md:text-[16px] font-bold hover:text-[#0057E2] transition-colors duration-300"
+                  >
+                    {link.name}
+                  </a>
+                ),
+              )}
+            </motion.div>
 
             {/* Footer Logo */}
             <motion.div
