@@ -1,0 +1,20 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "63T5489P6G.com.threebytz.lumely",
+        "paths": [
+          "/invite/*",
+          "/share/*",
+          "/community/*"
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "63T5489P6G.com.threebytz.lumely"
+    ]
+  }
+}
