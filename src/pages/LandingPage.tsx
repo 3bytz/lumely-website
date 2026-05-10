@@ -204,6 +204,12 @@ function LandingPage() {
                 Watch Demo
               </a>
               {/* <a
+                href="/subscribe"
+                className="text-white text-center h-[48px] text-[18px] font-bold font-fredoka px-12 py-3 hidden md:block rounded-lg bg-[#007BFF] border-2 border-[#0057E2] hover:bg-[#0057E2] hover:border-[#003DA3] transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
+              >
+                Pay with paystack
+              </a> */}
+              {/* <a
                 href="#pricing"
                 className="hover:opacity-80 text-[16px] font-fredoka text-[#007BFF]"
               >
@@ -245,6 +251,12 @@ function LandingPage() {
                 >
                   Watch Demo
                 </a>
+                <a
+                  href="/subscribe"
+                  className="text-white text-center h-[48px] text-[18px] font-bold font-fredoka px-12 py-3 hidden md:block rounded-lg bg-[#007BFF] border-2 border-[#0057E2] hover:bg-[#0057E2] hover:border-[#003DA3] transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                >
+                  Pay with PayStack
+                </a>
                 {/* <a
                   href="#pricing"
                   className="text-[16px] font-fredoka text-[white] hover:opacity-80"
@@ -260,9 +272,8 @@ function LandingPage() {
             href="/subscribe"
             className="text-white text-center h-[48px] text-[18px] font-bold font-fredoka px-12 py-3 hidden md:block rounded-lg bg-[#007BFF] border-2 border-[#0057E2] hover:bg-[#0057E2] hover:border-[#003DA3] transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
           >
-            Pay with paystack
+            Pay with PayStack
           </a>
-
         </nav>
 
         {/* Hero Section */}
@@ -301,7 +312,6 @@ function LandingPage() {
               stay consistent, and challenge yourself with real rewards.
             </motion.p>
 
-           
             {/* Hero Images */}
             <motion.div
               className="w-full flex flex-col justify-center items-center relative mt-10 sm:mt-16"
@@ -416,6 +426,24 @@ function LandingPage() {
                   <div className="text-left">
                     <div className="text-xs">DOWNLOAD ON THE</div>
                     <div className="text-xl font-bold">App Store</div>
+                  </div>
+                </motion.a>
+                <motion.a
+                  href="/subscribe"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center bg-black text-white px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  initial={{ opacity: 0, x: 50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.8 }}
+                  viewport={{ once: true }}
+                >
+                 
+                  <div className="text-left">
+                    <div className="text-xs">PAY ON THE WEB</div>
+                    <div className="text-xl font-bold">Paystack</div>
                   </div>
                 </motion.a>
               </div>
@@ -589,8 +617,8 @@ function LandingPage() {
                 See Lumely in Action
               </h2>
               <p className="text-lg text-[#444] max-w-2xl mx-auto font-fredoka">
-                Watch the demo video to see how Lumely transforms
-                goal-setting into winning habits
+                Watch the demo video to see how Lumely transforms goal-setting
+                into winning habits
               </p>
             </motion.div>
 
@@ -605,7 +633,6 @@ function LandingPage() {
                 ref={videoContainerRef}
                 className="relative bg-gradient-to-br from-blue-100 to-white rounded-3xl overflow-hidden shadow-2xl border-4 border-white group cursor-pointer"
                 onClick={(e) => {
-                  
                   if (!(e.target as HTMLElement).closest(".video-control")) {
                     togglePlayPause();
                   }
@@ -659,11 +686,10 @@ function LandingPage() {
                 {/* Video Element - Fixed 16:9 aspect ratio */}
                 <div className="relative w-full pt-[56.25%]">
                   {" "}
-                  
                   <video
                     ref={videoRef}
                     className="absolute top-0 left-0 w-full h-full object-cover"
-                    poster="/demo-video-poster.jpg" 
+                    poster="/demo-video-poster.jpg"
                     onEnded={handleVideoEnded}
                     onError={handleVideoError}
                     onLoadedData={handleVideoLoaded}
@@ -1200,7 +1226,6 @@ function LandingPage() {
           </div>
         </motion.section>
 
-      
         {/* Footer */}
         <motion.footer
           className="bg-white py-12 relative"
