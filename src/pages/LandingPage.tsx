@@ -257,10 +257,10 @@ function LandingPage() {
 
           {/* CTA Button */}
           <a
-            href="#app-video"
+            href="/subscribe"
             className="text-white text-center h-[48px] text-[18px] font-bold font-fredoka px-12 py-3 hidden md:block rounded-lg bg-[#007BFF] border-2 border-[#0057E2] hover:bg-[#0057E2] hover:border-[#003DA3] transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
           >
-            See Demo
+            Pay with paystack
           </a>
 
         </nav>
@@ -369,7 +369,7 @@ function LandingPage() {
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                 <motion.a
-                  href="https://drive.google.com/uc?export=download&id=1TCdx-wNEzAyOtEklLM1yZ7qaHDp3i6-e"
+                  href="https://play.google.com/store/apps/details?id=com.threebytz.lumely"
                   download={true}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -889,7 +889,7 @@ function LandingPage() {
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
                   <a
-                    href="https://drive.google.com/uc?export=download&id=1TCdx-wNEzAyOtEklLM1yZ7qaHDp3i6-e"
+                    href="https://play.google.com/store/apps/details?id=com.threebytz.lumely"
                     download={true}
                     target="_blank"
                     rel="noopener noreferrer"
