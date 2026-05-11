@@ -376,12 +376,12 @@ function PlanStep({ token, user }: { token: string; user: NormalisedUser }) {
             Your subscription is active. Open the app to enjoy all premium
             features.
           </p>
-          <a
+          {/* <a
             href="lumely://subscribe-callback"
             className="inline-flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-green-700 transition"
           >
             Open Lumely App →
-          </a>
+          </a> */}
         </div>
       )}
 
