@@ -210,7 +210,7 @@ export default function SubscribeCallbackPage() {
               </p>
 
               
-              <a
+              {/* <a
                 href={`lumely://subscribe-callback?reference=${encodeURIComponent(
                   reference
                 )}`}
@@ -228,7 +228,7 @@ export default function SubscribeCallbackPage() {
                   Download the app
                 </a>{" "}
                 and sign in — your Pro status will sync automatically.
-              </p>
+              </p> */}
 
               {reference && (
                 <div className="mt-6 bg-gray-50 rounded-xl px-4 py-2">
@@ -327,14 +327,14 @@ export default function SubscribeCallbackPage() {
                 >
                   Check Again
                 </button>
-                <a
+                {/* <a
                   href={`lumely://subscribe-callback?reference=${encodeURIComponent(
                     reference
                   )}`}
                   className="py-3 px-4 rounded-xl bg-gray-900 text-white font-semibold text-sm hover:bg-gray-800 transition text-center"
                 >
                   Open App
-                </a>
+                </a> */}
               </div>
 
               <a
