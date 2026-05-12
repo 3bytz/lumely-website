@@ -2,27 +2,111 @@ import { useEffect, useState, useRef } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import LogoFlame from "../assets/images/logo/logoFlame.png";
 
-
-
 const API_URL = "https://webapi.lumely.io";
-const MAX_POLLS = 5;
+const MAX_POLLS = 8;          
 const POLL_INTERVAL_MS = 3000;
-
 
 
 type PageStatus = "loading" | "success" | "failed" | "timeout";
 
-interface PaymentStatusResponse {
-  status: "active" | "success" | "pending" | "failed" | "expired" | string;
-  subscription?: {
-    status: string;
-    endDate?: string;
+
+interface PaystackVerifyResponse {
+  status: boolean;   
+  message?: string;
+  data?: {
+    status: string;  
+    reference?: string;
+    id?: number;
+    domain?: string;
+    amount?: number;
+    message?: string | null;
+    gateway_response?: string;
+    paid_at?: string;
+    created_at?: string;
+    channel?: string;
+    currency?: string;
+    ip_address?: string;
+    metadata?: any;
+    log?: any;
+    fees?: number;
+    fees_split?: any;
+    authorization?: any;
+    customer?: any;
+    plan?: any;
+    split?: any;
+    order_id?: string | null;
+    requested_amount?: number;
   };
-  hasActiveSubscription?: boolean;
 }
 
 
+function resolvePaystackStatus(raw: PaystackVerifyResponse): "success" | "failed" | "pending" {
+  
+  const inner = (raw?.data?.status ?? "").toLowerCase();
 
+  if (inner === "success") return "success";
+  if (inner === "failed" || inner === "abandoned") return "failed";
+
+ 
+  return "pending";
+}
+
+
+async function activateSubscriptionOnServer(
+  reference: string,
+  verifyData: PaystackVerifyResponse["data"],
+  token?: string
+): Promise<void> {
+  const webhookPayload = {
+    event: "charge.success",
+    data: {
+      id: verifyData?.id ?? 0,
+      domain: verifyData?.domain ?? "",
+      status: verifyData?.status ?? "success",
+      reference: verifyData?.reference ?? reference,
+      amount: verifyData?.amount ?? 0,
+      message: verifyData?.message ?? null,
+      gateway_response: verifyData?.gateway_response ?? "",
+      paid_at: verifyData?.paid_at ?? new Date().toISOString(),
+      created_at: verifyData?.created_at ?? new Date().toISOString(),
+      channel: verifyData?.channel ?? "",
+      currency: verifyData?.currency ?? "NGN",
+      ip_address: verifyData?.ip_address ?? "",
+      metadata: verifyData?.metadata ?? {},
+      log: verifyData?.log ?? {},
+      fees: verifyData?.fees ?? 0,
+      fees_split: verifyData?.fees_split ?? null,
+      authorization: verifyData?.authorization ?? {},
+      customer: verifyData?.customer ?? {},
+      plan: verifyData?.plan ?? null,
+      split: verifyData?.split ?? {},
+      order_id: verifyData?.order_id ?? null,
+      requested_amount: verifyData?.requested_amount ?? 0,
+      // these are sometimes camelCase in Paystack responses
+      paidAt: verifyData?.paid_at ?? new Date().toISOString(),
+      createdAt: verifyData?.created_at ?? new Date().toISOString(),
+    },
+  };
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+
+  const res = await fetch(`${API_URL}/webhook/paystack`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(webhookPayload),
+  });
+
+  if (!res.ok) {
+    console.warn(
+      "[SubscribeCallback] webhook activation returned",
+      res.status,
+      await res.text().catch(() => "")
+    );
+  }
+}
 function Spinner() {
   return (
     <svg
@@ -47,23 +131,23 @@ function Spinner() {
   );
 }
 
-
-
 export default function SubscribeCallbackPage() {
   const [searchParams] = useSearchParams();
   const [status, setStatus] = useState<PageStatus>("loading");
   const [pollCount, setPollCount] = useState(0);
   const [errorDetail, setErrorDetail] = useState<string>("");
+
   const pollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mountedRef = useRef(true);
+  const verifyDataRef = useRef<PaystackVerifyResponse["data"] | undefined>(undefined);
 
+  const sessionToken = sessionStorage.getItem("lumely_sub_token") ?? undefined;
 
   const reference =
     searchParams.get("reference") || searchParams.get("trxref") || "";
 
   useEffect(() => {
     mountedRef.current = true;
-
     return () => {
       mountedRef.current = false;
       if (pollTimerRef.current) clearTimeout(pollTimerRef.current);
@@ -78,7 +162,6 @@ export default function SubscribeCallbackPage() {
       );
       return;
     }
-
     verifyWithPolling(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reference]);
@@ -87,32 +170,50 @@ export default function SubscribeCallbackPage() {
     if (!mountedRef.current) return;
 
     try {
-      const res = await fetch(`${API_URL}/subscription/status/${reference}`);
+      const headers: Record<string, string> = {};
+      if (sessionToken) headers["Authorization"] = `Bearer ${sessionToken}`;
+
+      const res = await fetch(`${API_URL}/subscription/status/${reference}`, {
+        headers,
+      });
 
       if (!res.ok) {
+
+        if (res.status >= 400 && res.status < 500) {
+          setStatus("failed");
+          setErrorDetail(
+            "Payment verification returned an error. Please contact support."
+          );
+          return;
+        }
+        // 5xx — retry
         if (attempt < MAX_POLLS - 1) {
           scheduleNextPoll(attempt);
           return;
         }
-        setStatus("failed");
-        setErrorDetail("Payment verification returned an error. Please contact support.");
+        setStatus("timeout");
         return;
       }
 
-      const data: PaymentStatusResponse = await res.json();
+      const raw: PaystackVerifyResponse = await res.json();
       if (!mountedRef.current) return;
 
-      const paymentStatus =
-        data?.subscription?.status || data?.status || "pending";
-      const normalised = paymentStatus.toLowerCase();
+      const paymentStatus = resolvePaystackStatus(raw);
 
-      if (normalised === "active" || normalised === "success") {
+      if (paymentStatus === "success") {
+        verifyDataRef.current = raw.data;
+        try {
+          await activateSubscriptionOnServer(reference, raw.data, sessionToken);
+        } catch (err) {
+          console.warn("[SubscribeCallback] activation call failed:", err);
+          
+        }
         setStatus("success");
         setPollCount(attempt + 1);
         return;
       }
 
-      if (normalised === "failed" || normalised === "expired") {
+      if (paymentStatus === "failed") {
         setStatus("failed");
         setErrorDetail(
           "Payment was declined or failed. No funds have been taken. Please try again."
@@ -120,7 +221,7 @@ export default function SubscribeCallbackPage() {
         return;
       }
 
-      
+    
       if (attempt < MAX_POLLS - 1) {
         setPollCount(attempt + 1);
         scheduleNextPoll(attempt);
@@ -150,7 +251,9 @@ export default function SubscribeCallbackPage() {
     verifyWithPolling(0);
   }
 
-
+  const appDeepLink = reference
+    ? `lumely://subscription-callback?reference=${encodeURIComponent(reference)}`
+    : "lumely://";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex flex-col">
@@ -168,7 +271,8 @@ export default function SubscribeCallbackPage() {
 
       <main className="flex-1 flex items-center justify-center px-4 pb-16">
         <div className="w-full max-w-md">
-          
+
+          {/* ── Loading ── */}
           {status === "loading" && (
             <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-10 text-center">
               <div className="flex justify-center mb-6">
@@ -195,7 +299,7 @@ export default function SubscribeCallbackPage() {
             </div>
           )}
 
-          
+          {/* ── Success ── */}
           {status === "success" && (
             <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-10 text-center">
               <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -209,11 +313,8 @@ export default function SubscribeCallbackPage() {
                 premium features — unlimited habits, analytics, and more.
               </p>
 
-              
-              {/* <a
-                href={`lumely://subscribe-callback?reference=${encodeURIComponent(
-                  reference
-                )}`}
+              <a
+                href={appDeepLink}
                 className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl bg-blue-600 text-white font-bold text-sm hover:bg-blue-700 transition mb-3"
               >
                 Open Lumely App →
@@ -227,8 +328,9 @@ export default function SubscribeCallbackPage() {
                 >
                   Download the app
                 </a>{" "}
-                and sign in — your Pro status will sync automatically.
-              </p> */}
+                and sign in — your Pro status will sync automatically when the
+                app opens.
+              </p>
 
               {reference && (
                 <div className="mt-6 bg-gray-50 rounded-xl px-4 py-2">
@@ -240,7 +342,7 @@ export default function SubscribeCallbackPage() {
             </div>
           )}
 
-          
+          {/* ── Failed ── */}
           {status === "failed" && (
             <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-10 text-center">
               <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -293,7 +395,7 @@ export default function SubscribeCallbackPage() {
             </div>
           )}
 
-          
+          {/* ── Timeout ── */}
           {status === "timeout" && (
             <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-10 text-center">
               <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -303,10 +405,10 @@ export default function SubscribeCallbackPage() {
                 Taking Longer Than Expected
               </h2>
               <p className="text-gray-600 text-sm mb-6 leading-relaxed">
-                We couldn't confirm your payment within the expected time.
-                Your payment may still be processing. Open the Lumely app in a
-                few minutes — your Pro access will activate automatically once
-                confirmed.
+                We couldn't confirm your payment within the expected time. Your
+                payment may still be processing. Open the Lumely app in a few
+                minutes — your Pro access will activate automatically once
+                confirmed by our system.
               </p>
 
               {reference && (
@@ -320,21 +422,19 @@ export default function SubscribeCallbackPage() {
                 </div>
               )}
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3 mb-4">
                 <button
                   onClick={handleRetry}
                   className="py-3 px-4 rounded-xl bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700 transition"
                 >
                   Check Again
                 </button>
-                {/* <a
-                  href={`lumely://subscribe-callback?reference=${encodeURIComponent(
-                    reference
-                  )}`}
+                <a
+                  href={appDeepLink}
                   className="py-3 px-4 rounded-xl bg-gray-900 text-white font-semibold text-sm hover:bg-gray-800 transition text-center"
                 >
                   Open App
-                </a> */}
+                </a>
               </div>
 
               <a
