@@ -520,6 +520,7 @@ export default function SubscribePage() {
   const [user, setUser] = useState<NormalisedUser | null>(null);
 
   const handleLoginSuccess = useCallback((t: string, u: NormalisedUser) => {
+    sessionStorage.setItem("lumely_sub_token", t);
     setToken(t);
     setUser(u);
   }, []);
