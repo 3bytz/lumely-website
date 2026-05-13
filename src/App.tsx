@@ -5,6 +5,7 @@ import TermsOfService from './pages/TermsOfService';
 import LandingPage from './pages/LandingPage';
 import SubscribePage from './pages/SubscribePage';
 import SubscribeCallbackPage from './pages/SubscribeCallbackPage';
+import InvitePage from './pages/InvitePage';
 
 
 function App() {
@@ -18,6 +19,8 @@ function App() {
 
         <Route path="/subscribe" element={<SubscribePage />} />
         <Route path="/subscribe/callback" element={<SubscribeCallbackPage />} />
+
+        <Route path="/invite/:code" element={<InvitePage />} />
 
         <Route path="*" element={<LandingPage />} />
       </Routes>
