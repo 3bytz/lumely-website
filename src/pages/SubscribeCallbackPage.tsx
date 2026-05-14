@@ -328,7 +328,7 @@ export default function SubscribeCallbackPage() {
                 >
                   Download the app
                 </a>{" "}
-                and sign in — your Pro status will sync automatically when the
+                and sign in and your Pro status will sync automatically when the
                 app opens.
               </p>
 
@@ -407,7 +407,7 @@ export default function SubscribeCallbackPage() {
               <p className="text-gray-600 text-sm mb-6 leading-relaxed">
                 We couldn't confirm your payment within the expected time. Your
                 payment may still be processing. Open the Lumely app in a few
-                minutes — your Pro access will activate automatically once
+                minutes, your Pro access will activate automatically once
                 confirmed by our system.
               </p>
 
