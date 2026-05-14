@@ -30,10 +30,17 @@ export default function InvitePage() {
   const { code } = useParams<{ code: string }>();
   const [status, setStatus] = useState<PageStatus>('loading');
   const [invitation, setInvitation] = useState<InvitationData | null>(null);
-  const [deepLinkAttempted, setDeepLinkAttempted] = useState(false);
+  const [deepLinkAttempted] = useState(false);
 
-  const appDeepLink = code ? `lumely://invite/${code}` : 'lumely://';
-  const appSignupLink = code ? `lumely://invite/${code}` : 'lumely://';
+ 
+  const qs = typeof window !== 'undefined' ? window.location.search : '';
+  const appDeepLink = code
+    ? `https://lumely.io/invite/${code}${qs}`
+    : 'https://lumely.io';
+
+
+  const returnPath = encodeURIComponent(`/invite/${code}${qs}`);
+  const appSignupLink = `https://lumely.io/signup?returnUrl=${returnPath}`;
 
   useEffect(() => {
     if (!code) {
@@ -64,12 +71,6 @@ export default function InvitePage() {
     validate();
   }, [code]);
 
-  useEffect(() => {
-    if (status === 'valid' && !deepLinkAttempted) {
-      setDeepLinkAttempted(true);
-      window.location.href = appDeepLink;
-    }
-  }, [status, deepLinkAttempted, appDeepLink]);
 
   const handleOpenApp = () => {
     window.location.href = appDeepLink;
@@ -131,30 +132,41 @@ export default function InvitePage() {
                   Invitation expires: {new Date(invitation.expiresAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                 </div>
 
-                <button
-                  onClick={handleOpenApp}
-                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-base mb-3 hover:opacity-90 transition"
+                <a
+                  href={appDeepLink}
+                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-base mb-3 hover:opacity-90 transition flex items-center justify-center"
                 >
                   Open in Lumely App →
-                </button>
+                </a>
 
-                <button
-                  onClick={handleSignUp}
-                  className="w-full py-4 rounded-2xl bg-gray-900 text-white font-bold text-base mb-4 hover:bg-gray-800 transition"
+                <a
+                  href={appSignupLink}
+                  className="w-full py-4 rounded-2xl bg-gray-900 text-white font-bold text-base mb-4 hover:bg-gray-800 transition flex items-center justify-center"
                 >
-                  New to Lumely? Sign Up & Join
-                </button>
+                  New to Lumely? Sign Up &amp; Join
+                </a>
 
-                <p className="text-center text-xs text-gray-400">
-                  Don't have the app?{' '}
-                  <a
-                    href="https://lumely.io"
-                    className="text-indigo-500 hover:underline"
-                  >
-                    Download Lumely
-                  </a>{' '}
-                  and your invitation will be waiting.
+                <p className="text-center text-xs text-gray-400 mb-3">
+                  Don't have the app yet? Download it free:
                 </p>
+                <div className="flex gap-3">
+                  <a
+                    href="https://apps.apple.com/us/app/lumely/id6753071708"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-3 rounded-xl bg-gray-100 text-gray-700 font-semibold text-sm hover:bg-gray-200 transition text-center"
+                  >
+                    📱 App Store
+                  </a>
+                  <a
+                    href="https://play.google.com/store/apps/details?id=com.threebytz.lumely"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-3 rounded-xl bg-gray-100 text-gray-700 font-semibold text-sm hover:bg-gray-200 transition text-center"
+                  >
+                    🤖 Google Play
+                  </a>
+                </div>
               </div>
             </div>
           )}

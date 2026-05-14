@@ -1,20 +1,30 @@
 {
   "applinks": {
-    "apps": [],
     "details": [
       {
-        "appID": "63T5489P6G.com.threebytz.lumely",
-        "paths": [
-          "/invite/*",
-          "/share/*",
-          "/community/*"
+        "appIDs": ["63T5489P6G.com.threebytz.lumely"],
+        "components": [
+          {
+            "/": "/invite/*",
+            "comment": "Community and challenge invitation links"
+          },
+          {
+            "/": "/share/*",
+            "comment": "Shared content links"
+          },
+          {
+            "/": "/subscription-callback*",
+            "comment": "Paystack payment return"
+          },
+          {
+            "/": "/subscribe/callback*",
+            "comment": "Paystack payment return (web route alias)"
+          }
         ]
       }
     ]
   },
   "webcredentials": {
-    "apps": [
-      "63T5489P6G.com.threebytz.lumely"
-    ]
+    "apps": ["63T5489P6G.com.threebytz.lumely"]
   }
 }

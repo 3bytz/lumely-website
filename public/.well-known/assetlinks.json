@@ -1,10 +1,12 @@
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "com.threebytz.lumely",
-    "sha256_cert_fingerprints": [
-      "F8:29:B9:8C:3F:A0:89:DE:93:AE:19:00:1B:E6:98:03:20:5C:1A:B4:7F:BD:6C:B9:FA:F3:BF:71:7A:56:65:7C"
-    ]
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.threebytz.lumely",
+      "sha256_cert_fingerprints": [
+        "F8:29:B9:8C:3F:A0:89:DE:93:AE:19:00:1B:E6:98:03:20:5C:1A:B4:7F:BD:6C:B9:FA:F3:BF:71:7A:56:65:7C"
+      ]
+    }
   }
-}]
+]

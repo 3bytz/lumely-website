@@ -186,7 +186,6 @@ export default function SubscribeCallbackPage() {
           );
           return;
         }
-        // 5xx — retry
         if (attempt < MAX_POLLS - 1) {
           scheduleNextPoll(attempt);
           return;
@@ -251,9 +250,10 @@ export default function SubscribeCallbackPage() {
     verifyWithPolling(0);
   }
 
+  // Use the HTTPS universal link so iOS/Android opens the app directly.
   const appDeepLink = reference
-    ? `lumely://subscription-callback?reference=${encodeURIComponent(reference)}`
-    : "lumely://";
+    ? `https://lumely.io/subscription-callback?reference=${encodeURIComponent(reference)}`
+    : 'https://lumely.io';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex flex-col">
